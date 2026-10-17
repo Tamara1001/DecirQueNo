@@ -12,9 +12,9 @@ Objetivo: una partida de ~7 minutos (3 días), jugable en el navegador, que perm
 |---|---|
 | Meta | 100.000 seguidores; el "Sí" da +7.500 |
 | Salud | Empieza en 45, mínimo 0, máximo 100; no termina la partida |
-| "No" | Siempre existe. Largo según la salud: 3 / 5 / 8 / 12 palabras (niveles 1 a 4) |
+| "No" | Siempre existe. Largo según la salud: 2 / 4 / 6 / 8 palabras (niveles 1 a 4). El primer mensaje de la partida es de práctica con el No más corto |
 | Botones y banco | A peor nivel, botones más chicos y más distractores |
-| Timer | `9 + 6 × salud/100` s (9 a 15 s) |
+| Timer | `45 + 15 × salud/100` s (45 a 60 s). La presión viene del reloj del día |
 | "Sí" / "Tal vez" | 1 palabra / 2 a 4 palabras según el mensaje |
 | Notificación sin abrir | Vive 30 s; al expirar resta -1.500 seguidores, suma +2 salud y agenda insistencia. No cuenta como "No" dicho |
 | Insistencia | Un "No" o una expiración agenda un mensaje extra ×1.5 |
@@ -25,6 +25,15 @@ Objetivo: una partida de ~7 minutos (3 días), jugable en el navegador, que perm
 | Audio | Sin audio |
 | Extras | Instrucciones antes del día 1; Reiniciar en el final. Sin pausa, ajustes ni créditos |
 | Formato | 16:9, WebGL |
+
+## Ajustes tras el primer playtest (2026-10-17)
+Resultado: el core loop funciona, pero no se logró decir ningún "No" (respuesta promedio de 8 s). Cambios:
+- "No" más corto: 2 / 4 / 6 / 8 palabras (antes 3 / 5 / 8 / 12) y menos distractores (2 / 3 / 4 / 5 en vez de 4 / 6 / 8 / 10).
+- Timer de 45 a 60 s (antes 9 a 15 s). La presión pasa al reloj del día.
+- Mensaje de práctica con el "No" más corto, leyenda de largo por respuesta, aviso al cambiar el nivel y bonus por racha de "No".
+- Reloj del día solo en decenas de minutos.
+- Bot Average: juega a ritmo humano (4 s de reacción, 1,2 s por palabra) y debe poder lograr los "No".
+- Botones: se mantienen 100 / 85 / 70 / 60 %.
 
 ## Dentro del MVP
 1. Menú → instrucciones → día 1.

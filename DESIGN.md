@@ -40,7 +40,7 @@ Cada mensaje define tres tipos de respuesta:
 |---|---|---|
 | **Sí** | 1 palabra | `Si` |
 | **Tal vez** | variable según el mensaje (2 a 4 palabras) | `Tal vez` |
-| **No** | 4 niveles: 3, 5, 8 o 12 palabras | `No_1 No_2 No_3 …` |
+| **No** | 4 niveles: 2, 4, 6 o 8 palabras | `No_1 No_2 No_3 …` |
 
 Solo la frase del nivel de "No" actual es válida; las demás longitudes no se pueden armar porque sus palabras no están en el banco.
 
@@ -48,17 +48,25 @@ Solo la frase del nivel de "No" actual es válida; las demás longitudes no se p
 La **salud** determina el nivel:
 | Nivel | Salud | Palabras del No | Distractores | Tamaño de botones |
 |---|---|---|---|---|
-| 1 (fácil) | ≥ 80 | 3 | 4 | 100 % |
-| 2 | 65–79 | 5 | 6 | 85 % |
-| 3 | 50–64 | 8 | 8 | 70 % |
-| 4 (casi imposible) | < 50 | 12 | 10 | 60 % |
+| 1 (fácil) | ≥ 80 | 2 | 2 | 100 % |
+| 2 | 65–79 | 4 | 3 | 85 % |
+| 3 | 50–64 | 6 | 4 | 70 % |
+| 4 (el más difícil) | < 50 | 8 | 5 | 60 % |
 
 Como la salud arranca en 45, **el primer "No" es del nivel 4**: se puede lograr, pero hay que ser rápida y precisa. Cada "No" real sube la salud (y puede bajar el nivel); cada "Sí" la baja (y puede subirlo).
 Los números exactos están en BALANCE.md.
 
 ## Timer
-- Depende de la salud: más salud, más tiempo. Rango de **9 a 15 s** (fórmula en BALANCE.md).
+- Depende de la salud: más salud, más tiempo. Rango de **45 a 60 s** (fórmula en BALANCE.md). La presión no viene de armar rápido sino del reloj del día: mientras pensás, las otras notificaciones siguen venciendo.
 - Arranca al abrir la conversación. Si llega a 0 se envía "Sí" por default.
+
+## Que sea mental, no de velocidad
+Después del primer playtest (el "No" de 12 palabras en ~12 s era inalcanzable) se ajustó para que decidir pese más que hacer clicks rápido:
+- **Leyenda de esfuerzo:** al abrir un mensaje se ve cuántas palabras pide cada respuesta ("Si: 1   Tal vez: 3   No: 6"). La decisión es cuánto esfuerzo vale cada una.
+- **Práctica:** el primer mensaje que abrís en la partida siempre tiene el "No" más corto (2 palabras) y lo avisa, para descubrirlo y lograrlo una vez.
+- **Aviso de nivel:** cuando la salud sube o baja y cambia el nivel del "No", aparece "Decir que no te cuesta menos / más" al costado de la pantalla.
+- **Bonus por racha:** cada "No" seguido después del primero da +2 de salud extra (hasta +8). Un "Sí" o "Tal vez" corta la racha; una expiración no.
+- **Reloj en decenas:** el reloj del día muestra solo decenas de minutos (09:10, 09:20…), sin minutos exactos.
 
 ## Mecánica de respuesta
 - Pantalla de conversación: historial arriba, área de armado de frase abajo, banco de palabras, barra de timer, botón Enviar.

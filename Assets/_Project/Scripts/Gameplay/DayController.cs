@@ -115,7 +115,10 @@ namespace DecirQueNo
 
             MessageData message = notification.Message;
             Notifications.Remove(notification);
-            _conversation.Open(message,_manager.Config.GetResponseSeconds(_stats.Health), _stats, _manager.Config, _manager.RunSeed);
+            // The very first conversation of the run is practice: the No is as short as it gets.
+            int forcedLevel = _manager.PracticeDone ? -1 : 0;
+            _manager.PracticeDone = true;
+            _conversation.Open(message, _manager.Config.GetResponseSeconds(_stats.Health), _stats, _manager.Config, _manager.RunSeed, forcedLevel);
         }
 
         private void Schedule(float time, MessageData message)
@@ -182,6 +185,9 @@ namespace DecirQueNo
         {
             float t = Mathf.Clamp01(_elapsed / _day.dayLength);
             int totalMinutes = Mathf.RoundToInt(StartHour * 60 + t * (EndHour - StartHour) * 60);
+
+            // Only tens of minutes are shown: the exact minutes would add pressure for nothing.
+            totalMinutes -= totalMinutes % 10;
             string text = $"{totalMinutes / 60:00}:{totalMinutes % 60:00}";
             if (text == _clockText)
             {

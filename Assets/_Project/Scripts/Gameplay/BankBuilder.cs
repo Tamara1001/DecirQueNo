@@ -12,14 +12,18 @@ namespace DecirQueNo
             public List<PhraseOption> Options = new List<PhraseOption>();
             public NoLevelConfig Level;
             public int LevelIndex;
+            public bool IsTutorial;
         }
 
-        public static Bank Build(MessageData message, GameConfig config, int health, int seed)
+        // forcedLevelIndex >= 0 overrides the level the health would give (used for the practice message).
+        public static Bank Build(MessageData message, GameConfig config, int health, int seed, int forcedLevelIndex = -1)
         {
+            int levelIndex = forcedLevelIndex >= 0 ? forcedLevelIndex : config.GetNoLevelIndex(health);
             var bank = new Bank
             {
-                LevelIndex = config.GetNoLevelIndex(health),
-                Level = config.GetNoLevel(health),
+                LevelIndex = levelIndex,
+                Level = config.noLevels[levelIndex],
+                IsTutorial = forcedLevelIndex >= 0,
             };
 
             int noCount = Math.Min(bank.Level.wordCount, message.noWords.Count);

@@ -24,19 +24,21 @@ Todos estos valores viven en `GameConfig` (ScriptableObject) y no se hardcodean.
 
 Los mensajes de insistencia multiplican los efectos por ×1.5.
 
+**Racha de "No":** cada "No" seguido después del primero suma `+2` de salud extra, hasta `+8` (`noStreakBonusHealth`, `noStreakBonusCap`).
+
 ## Niveles del "No"
 | Nivel | Salud | Palabras del No | Distractores | Escala de botones |
 |---|---|---|---|---|
-| 1 | ≥ 80 | 3 | 4 | 1,00 |
-| 2 | 65–79 | 5 | 6 | 0,85 |
-| 3 | 50–64 | 8 | 8 | 0,70 |
-| 4 | < 50 | 12 | 10 | 0,60 |
+| 1 | ≥ 80 | 2 | 2 | 1,00 |
+| 2 | 65–79 | 4 | 3 | 0,85 |
+| 3 | 50–64 | 6 | 4 | 0,70 |
+| 4 | < 50 | 8 | 5 | 0,60 |
 
 - Palabras del Sí: 1. Palabras del Tal vez: 2 a 4 según el mensaje.
 - Solo es válida la frase del No del nivel actual.
 
 ## Timer de respuesta
-`segundos = 9 + 6 × (salud / 100)`, entre 9 y 15 s. Con salud 45, unos 11,7 s.
+`segundos = 45 + 15 × (salud / 100)`, entre 45 y 60 s. Con salud 45, unos 51,8 s.
 
 ## Finales
 | Final | Condición |
@@ -50,7 +52,7 @@ Una notificación expirada **no** cuenta como "No" dicho.
 ## Chequeo de sanidad (a verificar con bots)
 - Todo "Sí": 14 × 7.500 + 10.000 = 115.000 seguidores y salud al piso (0). Final triste con la meta lograda.
 - Todo "No" posible: cada "No" real sube 8 de salud, así que de 45 a ≥ 65 hacen falta 3 aciertos; los 5 "No" para el final feliz entran bien en 14 mensajes.
-- El primer "No" es de nivel 4 (12 palabras en ~11,7 s): tiene que ser lograble por una jugadora rápida y casi imposible para una promedio.
+- El primer "No" de la partida es una práctica con el largo del nivel 1 (2 palabras). Después el nivel depende de la salud (nivel 4 al arrancar: 8 palabras en ~52 s).
 
 ## Qué ajustar si...
 - Nadie logra el primer "No": bajar palabras del nivel 4, subir salud inicial, o subir el timer base.

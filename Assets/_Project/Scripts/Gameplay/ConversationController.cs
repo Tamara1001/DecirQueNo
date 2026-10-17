@@ -36,10 +36,10 @@ namespace DecirQueNo
             }
         }
 
-        public void Open(MessageData message, float seconds, PlayerStats stats, GameConfig config, int seed)
+        public void Open(MessageData message, float seconds, PlayerStats stats, GameConfig config, int seed, int forcedLevelIndex = -1)
         {
             _message = message;
-            Bank = BankBuilder.Build(message, config, stats.Health, seed);
+            Bank = BankBuilder.Build(message, config, stats.Health, seed, forcedLevelIndex);
             Builder = new PhraseBuilder(Bank.Words);
             Builder.OnChanged += () => OnCanSendChanged?.Invoke();
             _open = true;

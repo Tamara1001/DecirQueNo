@@ -54,6 +54,17 @@ namespace DecirQueNo.Tests
         }
 
         [UnityTest]
+        public IEnumerator AverageBot_CanSayNo()
+        {
+            var report = new BotReport();
+            yield return new BotPlayer(new AverageStrategy(), report).Play();
+
+            AssertInvariants(report);
+            Assert.GreaterOrEqual(report.No, 5, "A slow, average player must be able to land the No answers.");
+            Assert.AreEqual(Ending.Happy, report.Ending, "Going for the No at a human pace must still reach the happy ending.");
+        }
+
+        [UnityTest]
         public IEnumerator IgnorerBot_DoesNotWin()
         {
             var report = new BotReport();

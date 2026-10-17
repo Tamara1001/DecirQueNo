@@ -44,6 +44,20 @@ namespace DecirQueNo.Tests.Bots
         }
     }
 
+    // A person who is not fast: thinks for a while and clicks slowly, but always goes for the No.
+    // If this bot cannot land a No, the game is too hard for a real player.
+    public class AverageStrategy : IBotStrategy
+    {
+        public string Name => "Average";
+        public float ReactionSeconds => 4f;
+        public float ClickSeconds => 1.2f;
+
+        public PhraseType Choose(BotContext context)
+        {
+            return PhraseType.No;
+        }
+    }
+
     // Goal: reach the follower goal at a steady pace without burning out.
     // Tries the No when health is low and the phrase fits in the response time.
     // Otherwise Yes when behind the follower pace and Maybe when ahead.

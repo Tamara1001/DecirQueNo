@@ -18,20 +18,20 @@ MonoBehaviour:
   maxHealth: 100
   noLevels:
   - minHealth: 80
-    wordCount: 3
-    distractors: 4
+    wordCount: 2
+    distractors: 2
     buttonScale: 1
   - minHealth: 65
-    wordCount: 5
-    distractors: 6
+    wordCount: 4
+    distractors: 3
     buttonScale: 0.85
   - minHealth: 50
-    wordCount: 8
-    distractors: 8
+    wordCount: 6
+    distractors: 4
     buttonScale: 0.7
   - minHealth: 0
-    wordCount: 12
-    distractors: 10
+    wordCount: 8
+    distractors: 5
     buttonScale: 0.6
   distractorPool:
   - Banana
@@ -48,8 +48,8 @@ MonoBehaviour:
   - Mar
   - Palabra_1
   - Palabra_2
-  timerMinSeconds: 9
-  timerMaxSeconds: 15
+  timerMinSeconds: 45
+  timerMaxSeconds: 60
   happyMinHealth: 65
   happyMinNoCount: 5
   sadHealthBelow: 30
@@ -59,6 +59,8 @@ MonoBehaviour:
   maybeHealth: -6
   noFollowers: -500
   noHealth: 8
+  noStreakBonusHealth: 2
+  noStreakBonusCap: 4
   notificationLifetime: 30
   expireFollowers: -1500
   expireHealth: 2

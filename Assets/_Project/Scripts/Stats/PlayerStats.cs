@@ -25,6 +25,9 @@ namespace DecirQueNo
         public event Action<int> OnFollowersChanged;
         public event Action<int> OnHealthChanged;
 
+        // Old and new No level index. A lower index means the No got shorter (easier).
+        public event Action<int, int> OnNoLevelChanged;
+
         // 0 = easiest No (high health), up to noLevels.Count - 1 (low health).
         public int NoLevelIndex => _config.GetNoLevelIndex(Health);
 
@@ -55,6 +58,11 @@ namespace DecirQueNo
                     break;
             }
 
+            // Saying No several times in a row pays a little extra health.
+            int streakBonus = type == PhraseType.No
+                ? Mathf.Min(_noStreak - 1, _config.noStreakBonusCap) * _config.noStreakBonusHealth
+                : 0;
+
             if (timedOut)
             {
                 TimeoutCount++;
@@ -64,7 +72,7 @@ namespace DecirQueNo
             _totalResponseSeconds += responseSeconds;
 
             AddFollowers(_config.GetFollowers(type, multiplier));
-            AddHealth(_config.GetHealth(type, multiplier));
+            AddHealth(_config.GetHealth(type, multiplier) + streakBonus);
         }
 
         // A notification expired without being opened. It is not a No the player said.
@@ -83,8 +91,15 @@ namespace DecirQueNo
 
         public void AddHealth(int amount)
         {
+            int levelBefore = NoLevelIndex;
             Health = Mathf.Clamp(Health + amount, 0, _config.maxHealth);
             OnHealthChanged?.Invoke(Health);
+
+            int levelAfter = NoLevelIndex;
+            if (levelAfter != levelBefore)
+            {
+                OnNoLevelChanged?.Invoke(levelBefore, levelAfter);
+            }
         }
     }
 }

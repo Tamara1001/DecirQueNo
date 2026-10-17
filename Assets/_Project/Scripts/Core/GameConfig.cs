@@ -34,10 +34,10 @@ namespace DecirQueNo
         [Header("No difficulty (ordered from easiest to hardest)")]
         public List<NoLevelConfig> noLevels = new List<NoLevelConfig>
         {
-            new NoLevelConfig(80, 3, 4, 1f),
-            new NoLevelConfig(65, 5, 6, 0.85f),
-            new NoLevelConfig(50, 8, 8, 0.7f),
-            new NoLevelConfig(0, 12, 10, 0.6f),
+            new NoLevelConfig(80, 2, 2, 1f),
+            new NoLevelConfig(65, 4, 3, 0.85f),
+            new NoLevelConfig(50, 6, 4, 0.7f),
+            new NoLevelConfig(0, 8, 5, 0.6f),
         };
 
         public List<string> distractorPool = new List<string>
@@ -46,8 +46,8 @@ namespace DecirQueNo
         };
 
         [Header("Response timer (seconds, scales with health)")]
-        public float timerMinSeconds = 9f;
-        public float timerMaxSeconds = 15f;
+        public float timerMinSeconds = 45f;
+        public float timerMaxSeconds = 60f;
 
         [Header("Endings")]
         public int happyMinHealth = 65;
@@ -65,6 +65,11 @@ namespace DecirQueNo
         [Header("Effects: No")]
         public int noFollowers = -500;
         public int noHealth = 8;
+
+        [Tooltip("Extra health for each No in a row after the first one.")]
+        public int noStreakBonusHealth = 2;
+        [Tooltip("The streak bonus stops growing after this many Nos in a row.")]
+        public int noStreakBonusCap = 4;
 
         [Header("Notifications")]
         [Tooltip("Seconds an unopened notification lives before it expires.")]

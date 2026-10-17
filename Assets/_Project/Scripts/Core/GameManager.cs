@@ -37,6 +37,9 @@ namespace DecirQueNo
         // Seeds the distractors and bank order of this run.
         public int RunSeed { get; private set; }
 
+        // The first conversation of a run is a practice one with the shortest No.
+        public bool PracticeDone { get; set; }
+
         private readonly List<List<MessageData>> _schedule = new List<List<MessageData>>();
 
         // Messages queued for the next day (e.g. insistence after a No).
@@ -136,6 +139,7 @@ namespace DecirQueNo
             CurrentDay = 1;
             Ending = Ending.None;
             LastSummary = null;
+            PracticeDone = false;
             CarryOverMessages.Clear();
             BuildSchedule();
         }

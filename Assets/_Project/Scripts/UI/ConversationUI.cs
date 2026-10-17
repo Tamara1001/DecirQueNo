@@ -84,7 +84,7 @@ namespace DecirQueNo
                 StopCoroutine(_typing);
             }
 
-            _typing = StartCoroutine(ShowMessage(message));
+            _typing = StartCoroutine(ShowMessage(message, conversation.Bank));
 
             ApplyButtonScale(conversation.Bank.Level.buttonScale);
 
@@ -114,13 +114,27 @@ namespace DecirQueNo
             Refresh();
         }
 
-        private IEnumerator ShowMessage(MessageData message)
+        private IEnumerator ShowMessage(MessageData message, BankBuilder.Bank bank)
         {
             string header = $"{message.sender} ({message.timeAgo})\n";
             _historyText.text = header + "...";
             yield return new WaitForSeconds(TypingSeconds);
-            _historyText.text = header + message.body;
+            _historyText.text = header + message.body + "\n\n" + BuildLegend(bank);
             _typing = null;
+        }
+
+        // How many words each answer takes, so the player can weigh the effort before building anything.
+        private static string BuildLegend(BankBuilder.Bank bank)
+        {
+            string legend = "";
+            foreach (PhraseOption option in bank.Options)
+            {
+                string name = option.Type == PhraseType.Yes ? "Si" : option.Type == PhraseType.Maybe ? "Tal vez" : "No";
+                legend += $"{name}: {option.Words.Count}   ";
+            }
+
+            legend = legend.TrimEnd();
+            return bank.IsTutorial ? legend + "\n(Practica: aca el No es corto)" : legend;
         }
 
         private void ApplyButtonScale(float scale)
