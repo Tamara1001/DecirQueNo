@@ -42,10 +42,10 @@ Arte, audio, narrativa real, ramas de personajes, ajustes, créditos, pausa, sav
 Cada fase termina con los tests de bots en verde y los docs al día.
 
 ### Fase 0 — Orden (corta)
-- [ ] `.gitignore` (Library, Temp, Logs, BotReports, builds).
-- [ ] Commit 1: cambios viejos de URP / configuración.
-- [ ] Commit 2: el juego (`_Project`, docs, tests).
-- **Listo cuando:** `git status` limpio y el proyecto abre sin errores.
+- [x] `.gitignore` (Library, Temp, Logs, BotReports, builds).
+- [x] Commit 1: cambios viejos de URP / configuración (`10a6551`).
+- [x] Commit 2: el juego (`_Project`, docs, tests) (`2c2e4b7`).
+- **Hecho:** `git status` limpio.
 
 ### Fase 1 — Nuevo núcleo del "No"
 - [x] `MessageData`: frase de Sí (1 palabra), de Tal vez (2 a 4) y 12 palabras de No; el nivel actual usa las primeras N. Los distractores salen del pool de `GameConfig`.
@@ -99,6 +99,7 @@ Todo con código (tweens simples con corrutinas), sin assets.
 
 ### Fase 6 — Build WebGL
 - [x] Herramienta de build + zip (`BUILD.md`). Primera build con el juego previo al nuevo diseño: `Builds/DecirQueNo-WebGL.zip`, 18,4 MB, sin errores (2026-10-17). Falta probarla en un navegador.
+- [x] Build con todo el juego (Fases 1 a 5): `Builds/DecirQueNo-WebGL.zip`, 17,9 MB, sin errores (2026-10-17). Falta probarla en un navegador.
 - [x] Cambiar plataforma a WebGL; compresión Gzip + fallback; 1280×720.
 - [ ] Revisar tamaño, tiempo de carga y Input System en navegador.
 - [ ] Probar en servidor local en Chrome y Firefox.

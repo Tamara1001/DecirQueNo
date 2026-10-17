@@ -15,13 +15,13 @@ Diseño actualizado el 2026-10-17: el "No" siempre existe pero es una frase larg
 
 | Fase | Contenido | Estado |
 |---|---|---|
-| 0 | `.gitignore` y dos commits (URP viejo / juego) | Pendiente |
+| 0 | `.gitignore` y dos commits (URP viejo / juego) | **Hecho** (2026-10-17) |
 | 1 | Nuevo núcleo del "No": datos por mensaje, niveles según salud, botones y banco por nivel, timer por salud, salud inicial 45 | **Hecho** (2026-10-17) |
 | 2 | Expiración de notificaciones, pool con semilla y mensajes mezclados, estadísticas, órdenes y tres finales | **Hecho** (2026-10-17) |
 | 3 | Bots: Influencer, MentalHealth, Balanced e Ignorer hechos; faltan Average y Slow | Parcial |
 | 4 | Instrucciones, espejo en Sleep, finales con estadísticas y Reiniciar | **Hecho** (2026-10-17), falta ojo humano |
 | 5 | Game feel simple | **Hecho** (2026-10-17), falta ojo humano |
-| 6 | Build WebGL probada en navegador (la herramienta de build ya existe, ver `BUILD.md`) | Parcial |
+| 6 | Build WebGL probada en navegador (herramienta en `BUILD.md`). Build con todo el juego generada: 17,9 MB | Parcial: falta probarla en navegador |
 | 7 | Borrador privado en itch.io, revisión final | Pendiente |
 
 ## Validación antes de publicar
