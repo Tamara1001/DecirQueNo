@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Extra_Msg6_Insist
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Nombre_2
+  timeAgo: Hace 1
+  body: "Insisto: hac\xE9 misi\xF3n_20"
+  yesWords:
+  - Si
+  maybeWords:
+  - Tal
+  - vez
+  - luego
+  - si
+  noWords:
+  - No_20_1
+  - No_20_2
+  - No_20_3
+  - No_20_4
+  - No_20_5
+  - No_20_6
+  - No_20_7
+  - No_20_8
+  - No_20_9
+  - No_20_10
+  - No_20_11
+  - No_20_12
+  pressure: 1
+  effectMultiplier: 1.5
+  insistence: {fileID: 0}

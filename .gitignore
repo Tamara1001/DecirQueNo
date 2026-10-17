@@ -112,3 +112,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Bots y tests
+/BotReports/
+/Assets/Resources/PerformanceTestRun*

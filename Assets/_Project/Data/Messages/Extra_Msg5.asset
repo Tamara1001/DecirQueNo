@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Extra_Msg5
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Nombre_1
+  timeAgo: Hace 19
+  body: "Hac\xE9 misi\xF3n_19"
+  yesWords:
+  - Si
+  maybeWords:
+  - Tal
+  - vez
+  - manana
+  noWords:
+  - No_19_1
+  - No_19_2
+  - No_19_3
+  - No_19_4
+  - No_19_5
+  - No_19_6
+  - No_19_7
+  - No_19_8
+  - No_19_9
+  - No_19_10
+  - No_19_11
+  - No_19_12
+  pressure: 0
+  effectMultiplier: 1
+  insistence: {fileID: 11400000, guid: 01b7c106467866142bf78676d37d377d, type: 2}
