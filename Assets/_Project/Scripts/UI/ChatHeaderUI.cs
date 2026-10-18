@@ -134,9 +134,37 @@ namespace DecirQueNo
         public void Show(string sender)
         {
             _name.text = sender;
-            _avatar.color = AvatarColor(sender);
-            _initial.text = Initial(sender);
+
+            // The picture of the contact when the artists made one (UI/Avatar_<name>), else a colored circle with the initial.
+            Sprite portrait = Resources.Load<Sprite>("UI/Avatar_" + ContactKey(sender));
+            if (portrait != null)
+            {
+                _avatar.sprite = portrait;
+                _avatar.type = Image.Type.Simple;
+                _avatar.preserveAspect = true;
+                _avatar.color = Color.white;
+                _initial.gameObject.SetActive(false);
+            }
+            else
+            {
+                UiSprites.Round(_avatar, 33f);
+                _avatar.color = AvatarColor(sender);
+                _initial.text = Initial(sender);
+                _initial.gameObject.SetActive(true);
+            }
+
             SetTyping(false);
+        }
+
+        private static string ContactKey(string sender)
+        {
+            string key = sender != null ? sender.ToLowerInvariant() : "";
+            if (key.Contains("vip") || key.Contains("contacto"))
+            {
+                return "Vip";
+            }
+
+            return key.Contains("christian") || key.Contains("cristian") ? "Christian" : "Valerie";
         }
 
         // "Escribiendo..." while the contact writes, "En línea" the rest of the time.

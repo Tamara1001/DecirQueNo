@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,11 @@ namespace DecirQueNo
         private TMP_Text _continueLabel;
         private Image _cardFill;
         private bool _morning;
+        private bool _changing;
+
+        // Between the night and the next morning: fade out, a second of black, fade in.
+        private const float FadeSeconds = 0.6f;
+        private const float BlackSeconds = 1f;
 
         private void Start()
         {
@@ -106,6 +112,11 @@ namespace DecirQueNo
 
         private void HandleContinue()
         {
+            if (_changing)
+            {
+                return;
+            }
+
             GameManager manager = GameManager.Instance;
 
             // After the last day there is no morning: the ending follows the night mirror.
@@ -115,7 +126,18 @@ namespace DecirQueNo
                 return;
             }
 
+            StartCoroutine(NightToMorning());
+        }
+
+        private IEnumerator NightToMorning()
+        {
+            _changing = true;
+            GameManager manager = GameManager.Instance;
+            yield return manager.FadeTo(1f, FadeSeconds);
+            yield return new WaitForSecondsRealtime(BlackSeconds);
             ShowMorning();
+            yield return manager.FadeTo(0f, FadeSeconds);
+            _changing = false;
         }
 
         // The mirror shows the health without numbers: the expression of Sam. Night uses the shadowed set.

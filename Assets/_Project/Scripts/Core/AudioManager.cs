@@ -232,12 +232,28 @@ namespace DecirQueNo
                     break;
                 case GameManager.EndingScene:
                     GameManager manager = GameManager.Instance;
-                    PlayMusic(manager != null && manager.Ending == Ending.Happy ? "BGM_Ganar" : "BGM_Perder", false);
+                    PlayMusic(EndingTrack(manager != null ? manager.Ending : Ending.Sad), false);
                     break;
                 default:
                     PlayMusic("BGM_Menu");
                     break;
             }
+        }
+
+        // Good ending: win theme. Middle ending: its own theme if the clip exists. Bad ending: lose theme.
+        private string EndingTrack(Ending ending)
+        {
+            if (ending == Ending.Happy)
+            {
+                return "BGM_Ganar";
+            }
+
+            if (ending == Ending.Neutral && Resources.Load<AudioClip>(Folder + "BGM_Neutral") != null)
+            {
+                return "BGM_Neutral";
+            }
+
+            return "BGM_Perder";
         }
 
         private void StartHealthMix()

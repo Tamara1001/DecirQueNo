@@ -13,6 +13,7 @@ namespace DecirQueNo.Tests.Bots
 
         private readonly IBotStrategy _strategy;
         private readonly BotReport _report;
+        private bool _sleepRecorded;
         private float _startedAt;
 
         public BotPlayer(IBotStrategy strategy, BotReport report)
@@ -42,19 +43,19 @@ namespace DecirQueNo.Tests.Bots
                         yield return new WaitForSecondsRealtime(0.5f);
                         break;
                     case GameManager.GameScene:
+                        _sleepRecorded = false;
                         yield return PlayGameFrame();
                         break;
                     case GameManager.SleepScene:
-                        RecordSummary();
-                        ClickOnlyButton();
-                        if (GameManager.Instance.Ending == Ending.None)
+                        // Night mirror -> (fade to black) -> morning mirror -> next day: keep pressing the button.
+                        if (!_sleepRecorded)
                         {
-                            // Night mirror -> morning mirror -> next day.
-                            yield return null;
-                            ClickOnlyButton();
+                            RecordSummary();
+                            _sleepRecorded = true;
                         }
 
-                        yield return WaitForSceneChange(GameManager.SleepScene);
+                        ClickOnlyButton();
+                        yield return new WaitForSecondsRealtime(0.8f);
                         break;
                     default:
                         yield return null;

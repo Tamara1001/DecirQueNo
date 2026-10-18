@@ -118,6 +118,12 @@ namespace DecirQueNo
             _fader.FadeTo(0f, FadeSeconds);
         }
 
+        // Fades the screen to black (1) or back (0). Used for the pause between the night and the next morning.
+        public Coroutine FadeTo(float alpha, float seconds)
+        {
+            return _fader.FadeTo(alpha, seconds);
+        }
+
         public DaySummary LastSummary { get; set; }
 
         // Closing monologue of the final message, shown in the ending.
@@ -204,6 +210,12 @@ namespace DecirQueNo
 
         public void ContinueAfterSleep()
         {
+            // A second click during the fade must not skip another day.
+            if (_loading)
+            {
+                return;
+            }
+
             if (Ending != Ending.None)
             {
                 LoadScene(EndingScene);

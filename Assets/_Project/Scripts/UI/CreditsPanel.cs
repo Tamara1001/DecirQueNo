@@ -28,7 +28,7 @@ namespace DecirQueNo
             "Manuel Martinez Miraglia  <size=75%>@ManuSMC</size>\n" +
             "Jessica Briseño  <size=75%>@JessBriss</size>\n\n" +
             "<b><color=#9E409E>Audio para Videojuegos</color></b>\n" +
-            "Oriana Oseguera  <size=75%>@Ori</size>\n\n" +
+            "Oriana Oseguera  <size=75%>@ori.sounds</size>\n\n" +
             "<size=65%>Iconos: Material Icons (Google), licencia Apache 2.0</size>";
 
         // Creates the panel (hidden) under parent. backTemplate is cloned for the close button.

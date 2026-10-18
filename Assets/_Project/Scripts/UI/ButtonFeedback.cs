@@ -107,16 +107,31 @@ namespace DecirQueNo
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             _pressed = true;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             _pressed = false;
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
             // A little kick so the button pops back out after the press.
             _scaleVelocity += Vector2.one * ClickKick;
 

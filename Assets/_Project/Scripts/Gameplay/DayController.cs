@@ -197,8 +197,8 @@ namespace DecirQueNo
             // closer, so the player gets to see the afternoon and the night. The clock catches up smoothly.
             float timeProgress = Mathf.Clamp01(_elapsed / _day.dayLength);
             float total = Mathf.Max(1f, _messages.Count);
-            float messageProgress = Mathf.Clamp01((_resolved + (_conversation.IsBusy ? 0.5f : 0f)) / total);
-            _shownProgress = Mathf.MoveTowards(_shownProgress, Mathf.Max(timeProgress, messageProgress), ClockCatchUp * Time.deltaTime);
+            float messageProgress = Mathf.Clamp01(_resolved / total);
+            _shownProgress = Mathf.MoveTowards(_shownProgress, Mathf.Max(_shownProgress, timeProgress, messageProgress), ClockCatchUp * Time.deltaTime);
             float t = _shownProgress;
             int totalMinutes = Mathf.RoundToInt(StartHour * 60 + t * (EndHour - StartHour) * 60);
 

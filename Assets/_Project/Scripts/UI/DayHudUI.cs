@@ -15,8 +15,8 @@ namespace DecirQueNo
 
         // Light of the room along the day (09:00 to 23:00): clear until the afternoon, golden at sunset, dark at night.
         private static readonly Color DayLight = new Color(1f, 0.95f, 0.8f, 0f);
-        private static readonly Color AfternoonLight = new Color(1f, 0.8f, 0.38f, 0.2f);
-        private static readonly Color SunsetLight = new Color(1f, 0.5f, 0.16f, 0.36f);
+        private static readonly Color AfternoonLight = new Color(1f, 0.9f, 0.6f, 0.13f);
+        private static readonly Color SunsetLight = new Color(1f, 0.76f, 0.42f, 0.22f);
         private static readonly Color NightLight = new Color(0.1f, 0.15f, 0.55f, 0.52f);
         private const float AfternoonStartsAt = 13.5f;
         private const float AfternoonFullAt = 16.5f;
