@@ -103,6 +103,7 @@ namespace DecirQueNo.Tests.Bots
             };
 
             PhraseOption phrase = PickOption(conversation.Bank.Options, _strategy.Choose(context));
+            _report.Choices.Add(phrase.Type);
 
             // Thinking plus clicking every word takes game time; long No phrases may not fit.
             yield return new WaitForSeconds(_strategy.ReactionSeconds + _strategy.ClickSeconds * phrase.Words.Count);
@@ -134,13 +135,24 @@ namespace DecirQueNo.Tests.Bots
             yield return null;
         }
 
+        // Only the final message has a real No, and it has no evasive answer. When the wanted phrase is not
+        // there the bot takes the closest one: No -> evasive -> Yes.
         private static PhraseOption PickOption(System.Collections.Generic.IReadOnlyList<PhraseOption> options, PhraseType wanted)
         {
-            foreach (PhraseOption option in options)
+            PhraseType[] order = wanted == PhraseType.No
+                ? new[] { PhraseType.No, PhraseType.Maybe, PhraseType.Yes }
+                : wanted == PhraseType.Maybe
+                    ? new[] { PhraseType.Maybe, PhraseType.Yes }
+                    : new[] { PhraseType.Yes };
+
+            foreach (PhraseType type in order)
             {
-                if (option.Type == wanted)
+                foreach (PhraseOption option in options)
                 {
-                    return option;
+                    if (option.Type == type)
+                    {
+                        return option;
+                    }
                 }
             }
 

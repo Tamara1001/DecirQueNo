@@ -13,10 +13,4 @@ MonoBehaviour:
   m_Name: Day_3
   m_EditorClassIdentifier: Assembly-CSharp::DecirQueNo.DayData
   dayNumber: 3
-  dayLength: 150
-  arrivalTimes:
-  - 5
-  - 25
-  - 45
-  - 65
-  - 90
+  dayLength: 240

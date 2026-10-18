@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace DecirQueNo
@@ -9,11 +10,17 @@ namespace DecirQueNo
 
         private MessageData _message;
         private bool _open;
+        private bool _replying;
 
         public MessageData Message => _message;
         public PhraseBuilder Builder { get; private set; }
         public BankBuilder.Bank Bank { get; private set; }
+
+        // True while the player is building an answer.
         public bool IsOpen => _open;
+
+        // True from opening until the sender's reply has been read and the conversation closed.
+        public bool IsBusy => _open || _replying;
 
         // Seconds the last answer took from opening the conversation.
         public float LastResponseSeconds { get; private set; }
@@ -22,8 +29,15 @@ namespace DecirQueNo
         // How long the message waited before being opened, for the "Hace x" label.
         public float OpenedAgeSeconds { get; set; }
 
+        // What the last answer was, for the reply screen.
+        public PhraseType LastType { get; private set; }
+        public IReadOnlyList<string> LastWords { get; private set; }
+
         public event Action<ConversationController> OnOpened;
         public event Action<MessageData, PhraseType, bool> OnResponded;
+
+        // Raised when the reply was read and the conversation is over.
+        public event Action OnClosed;
         public event Action OnCanSendChanged;
 
         private void Awake()
@@ -39,13 +53,14 @@ namespace DecirQueNo
             }
         }
 
-        public void Open(MessageData message, float seconds, PlayerStats stats, GameConfig config, int seed, int forcedLevelIndex = -1)
+        public void Open(MessageData message, float seconds, PlayerStats stats, GameConfig config, int seed)
         {
             _message = message;
-            Bank = BankBuilder.Build(message, config, stats.Health, seed, forcedLevelIndex);
+            Bank = BankBuilder.Build(message, config, stats.Health, seed);
             Builder = new PhraseBuilder(Bank.Words);
             Builder.OnChanged += () => OnCanSendChanged?.Invoke();
             _open = true;
+            _replying = false;
 
             OnOpened?.Invoke(this);
             _timer.StartTimer(seconds);
@@ -71,6 +86,18 @@ namespace DecirQueNo
             Finish(type, false);
         }
 
+        // Ends the reply screen. Called by the UI once the player read the sender's answer.
+        public void Close()
+        {
+            if (!_replying)
+            {
+                return;
+            }
+
+            _replying = false;
+            OnClosed?.Invoke();
+        }
+
         // Used by tests and by the day controller when it needs to close the conversation.
         public void ForceTimeout()
         {
@@ -88,8 +115,13 @@ namespace DecirQueNo
         private void Finish(PhraseType type, bool timedOut)
         {
             _open = false;
+            _replying = true;
             LastResponseSeconds = _timer.Duration - _timer.Remaining;
             _timer.StopTimer();
+
+            // When time runs out the game answers Yes for the player.
+            LastType = type;
+            LastWords = timedOut ? new List<string>(_message.GetWords(PhraseType.Yes)) : Builder.GetWords();
             OnResponded?.Invoke(_message, type, timedOut);
         }
     }

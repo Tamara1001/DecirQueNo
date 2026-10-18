@@ -10,7 +10,6 @@ namespace DecirQueNo
     {
         private static readonly Color FullLifeColor = new Color(0.35f, 0.8f, 0.4f);
         private static readonly Color LowLifeColor = new Color(0.9f, 0.3f, 0.3f);
-        private static readonly Color InsistenceColor = new Color(1f, 0.75f, 0.75f);
 
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _label;
@@ -19,7 +18,6 @@ namespace DecirQueNo
 
         private Notification _notification;
         private bool _expiring;
-        private bool _insistent;
 
         public MessageData Message => _notification?.Message;
 
@@ -37,16 +35,8 @@ namespace DecirQueNo
             _notification = notification;
             MessageData message = notification.Message;
 
-            // Insistence messages are marked in red so they stand out.
-            bool insistent = message.pressure > 0;
-            _insistent = insistent;
             UiFx.MakeHorizontalFill(_lifeFill);
             RefreshLabel();
-            var background = GetComponent<Image>();
-            if (insistent && background != null)
-            {
-                background.color = InsistenceColor;
-            }
 
             _button.onClick.RemoveAllListeners();
             _button.onClick.AddListener(() => onClick?.Invoke(notification));
@@ -95,9 +85,7 @@ namespace DecirQueNo
             DayData day = GameManager.Instance != null ? GameManager.Instance.CurrentDayData : null;
             float dayLength = day != null ? day.dayLength : 150f;
             string ago = TimeAgo.Format(_notification.Lifetime - _notification.Remaining, dayLength);
-            string text = _insistent
-                ? $"!  {_notification.Message.sender}  ({ago})"
-                : $"{_notification.Message.sender}  ({ago})";
+            string text = $"{_notification.Message.sender}  ({ago})";
             if (text != _label.text)
             {
                 _label.text = text;

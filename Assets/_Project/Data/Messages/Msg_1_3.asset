@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Msg_1_3
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Valerie
+  body: "Estuvo brutal el morbo del live, rompimos record.\nYa cumpl\xED contigo,
+    ahora le paso tu contacto a Christian Vega, mi manager\nEscr\xEDbele de una vez
+    o perder\xE1s el momento"
+  level: 1
+  isFinal: 0
+  yesWords:
+  - "\xA1No inventes! \U0001F631"
+  - "\xA1much\xEDsimas gracias,"
+  - ya mismo
+  - le hablo,
+  - "\xA1mil gracias!"
+  evasiveWords:
+  - "Qued\xE9 agotad\xEDsima,"
+  - "\xBFpuedo hablarle"
+  - "ma\xF1ana con"
+  - un poco
+  - "m\xE1s calma?"
+  noWords: []
+  yesReply: "De nada hermosa, te lo ganaste\nCobra caro pero hace milagros, no me
+    hagas quedar mal ni lo dejes esperando \U0001F460\u2728"
+  evasiveReply: "\xBFDescansar? Ay linda, qu\xE9 ingenua eres\nLa gente importante
+    no espera tu siesta.\nEscr\xEDbele ahorita o busca otro manager por tu cuenta
+    \U0001F971"
+  noReply: 
+  sourceBank:
+  - "\xA1No inventes! \U0001F631"
+  - "\xA1much\xEDsimas gracias,"
+  - ya mismo
+  - le hablo,
+  - "\xA1mil gracias!"
+  - "Qued\xE9 agotad\xEDsima,"
+  - "\xBFpuedo hablarle"
+  - "ma\xF1ana con"
+  - un poco
+  - "m\xE1s calma?"

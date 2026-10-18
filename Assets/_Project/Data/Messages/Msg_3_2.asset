@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Msg_3_2
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Contacto VIP
+  body: "Eres a\xFAn m\xE1s fascinante sin todo el maquillaje que te impone Christian.\nTe
+    ves nerviosa mirando hacia la cortina... la dejaste entreabierta.\nEstoy afuera
+    de tu edificio. Baja a abrirme, los proyectos grandes se firman de frente."
+  level: 3
+  isFinal: 0
+  yesWords:
+  - ya bajo
+  - pero que
+  - no demore
+  - mucho ya
+  - es tarde
+  evasiveWords:
+  - "no deber\xEDas"
+  - "estar aqu\xED"
+  - es demasiado
+  - es necesario
+  - de frente
+  noWords: []
+  yesReply: "Solo tomar\xE1 unos minutos, Samantha.\nAbre la reja principal. Ya cruc\xE9
+    la acera."
+  evasiveReply: "Por supuesto que es necesario; la confianza se construye cara a
+    cara.\nUn vecino me abri\xF3 la puerta principal del edificio. Voy subiendo."
+  noReply: 
+  sourceBank:
+  - ya bajo
+  - pero que
+  - no demore
+  - mucho ya
+  - es tarde
+  - "no deber\xEDas"
+  - "estar aqu\xED"
+  - es demasiado
+  - es necesario
+  - de frente

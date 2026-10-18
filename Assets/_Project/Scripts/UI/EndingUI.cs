@@ -16,16 +16,15 @@ namespace DecirQueNo
             manager.EnsureGame();
             PlayerStats stats = manager.Stats;
 
-            string title = manager.Ending == Ending.Happy ? "FINAL FELIZ"
-                : manager.Ending == Ending.Neutral ? "FINAL NEUTRO"
-                : "FINAL TRISTE";
+            string title = manager.Ending == Ending.Happy ? "FINAL: DECIR QUE NO" : "FINAL: NO DIJE QUE NO";
+            string closing = manager.LastFinalText;
 
             _text.text =
                 $"{title}\n" +
-                $"Seguidores: {stats.Followers:N0} / {manager.Config.goalFollowers:N0}   Salud: {stats.Health}\n" +
-                $"Si: {stats.YesCount}   Tal vez: {stats.MaybeCount}   No: {stats.NoCount}   Expiradas: {stats.ExpiredCount}\n" +
-                $"Mejor racha de No: {stats.BestNoStreak}   Timeouts: {stats.TimeoutCount}\n" +
-                $"Tiempo promedio de respuesta: {stats.AverageResponseSeconds:0.0} s   Nivel de No final: {stats.NoLevelIndex + 1}\n" +
+                (string.IsNullOrEmpty(closing) ? "" : TextDisplay.ForScreen(closing, manager.Config.showEmojis) + "\n") +
+                $"Seguidores: {stats.Followers:N0} / {manager.Config.goalFollowers:N0}   Cordura: {stats.Health}\n" +
+                $"Si: {stats.YesCount}   Evasivas: {stats.EvasiveCount}   No: {stats.NoCount}   Sin abrir: {stats.ExpiredCount}\n" +
+                $"Se acabo el tiempo: {stats.TimeoutCount}   Tiempo promedio de respuesta: {stats.AverageResponseSeconds:0.0} s\n" +
                 $"Semilla: {manager.RunSeed}";
 
             _restartButton.onClick.AddListener(manager.StartNewGame);

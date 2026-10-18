@@ -4,23 +4,24 @@ using UnityEngine;
 
 namespace DecirQueNo
 {
+    // Plays one day of the script: the messages arrive one at a time, always in the same order.
     public class DayController : MonoBehaviour
     {
         private const int StartHour = 9;
         private const int EndHour = 23;
-        private const float InsistenceDelay = 8f;
-        private const float InsistenceCutoff = 15f;
-        private const float CarryOverStart = 3f;
-        private const float CarryOverGap = 4f;
+        private const float FirstMessageDelay = 3f;
+        private const float MessageGap = 5f;
 
         [SerializeField] private ConversationController _conversation;
 
-        private readonly List<Scheduled> _scheduled = new List<Scheduled>();
         private readonly DaySummary _summary = new DaySummary();
 
         private GameManager _manager;
         private PlayerStats _stats;
         private DayData _day;
+        private IReadOnlyList<MessageData> _messages;
+        private int _nextIndex;
+        private float _nextArrivalIn;
         private float _elapsed;
         private int _startFollowers;
         private int _startHealth;
@@ -32,12 +33,6 @@ namespace DecirQueNo
         public string ClockText => _clockText;
 
         public event Action<int, string> OnClockChanged;
-
-        private class Scheduled
-        {
-            public float Time;
-            public MessageData Message;
-        }
 
         private void Start()
         {
@@ -56,19 +51,8 @@ namespace DecirQueNo
             _startHealth = _stats.Health;
             _summary.Day = _day.dayNumber;
 
-            IReadOnlyList<MessageData> messages = _manager.GetDayMessages(_day.dayNumber);
-            for (int i = 0; i < messages.Count; i++)
-            {
-                float arrival = i < _day.arrivalTimes.Count ? _day.arrivalTimes[i] : _day.arrivalTimes[_day.arrivalTimes.Count - 1];
-                Schedule(arrival, messages[i]);
-            }
-
-            for (int i = 0; i < _manager.CarryOverMessages.Count; i++)
-            {
-                Schedule(CarryOverStart + i * CarryOverGap, _manager.CarryOverMessages[i]);
-            }
-
-            _manager.CarryOverMessages.Clear();
+            _messages = _manager.GetDayMessages(_day.dayNumber);
+            _nextArrivalIn = FirstMessageDelay;
             _conversation.OnResponded += HandleResponded;
             UpdateClock();
         }
@@ -89,25 +73,28 @@ namespace DecirQueNo
             }
 
             _elapsed += Time.deltaTime;
-            Deliver();
             foreach (Notification expired in Notifications.Tick(Time.deltaTime))
             {
                 Expire(expired.Message);
             }
 
+            DeliverNext();
             UpdateClock();
 
-            // A conversation already open is never cut off by the clock: the response timer bounds it.
-            // Reaching the goal ends the run right away; an open chat is allowed to finish first.
-            if (_stats.Followers >= _manager.Config.goalFollowers && !_conversation.IsOpen)
+            if (_conversation.IsBusy)
+            {
+                return;
+            }
+
+            // Reaching the goal ends the run right away.
+            if (_stats.Followers >= _manager.Config.goalFollowers)
             {
                 EndDay(true);
                 return;
             }
 
-            bool timeIsUp = _elapsed >= _day.dayLength && !_conversation.IsOpen;
-            bool allDone = _scheduled.Count == 0 && Notifications.Count == 0 && !_conversation.IsOpen;
-            if (timeIsUp || allDone)
+            // The day ends once every message of the script was answered or expired.
+            if (_nextIndex >= _messages.Count && Notifications.Count == 0)
             {
                 EndDay();
             }
@@ -115,40 +102,39 @@ namespace DecirQueNo
 
         public void Select(Notification notification)
         {
-            if (_ended || _conversation.IsOpen || !Notifications.Contains(notification))
+            if (_ended || _conversation.IsBusy || !Notifications.Contains(notification))
             {
                 return;
             }
 
             MessageData message = notification.Message;
             Notifications.Remove(notification);
-            // The very first conversation of the run is practice: the No is as short as it gets.
-            int forcedLevel = _manager.PracticeDone ? -1 : 0;
-            _manager.PracticeDone = true;
             _conversation.OpenedAgeSeconds = notification.Lifetime - notification.Remaining;
-            _conversation.Open(message, _manager.Config.GetResponseSeconds(_stats.Health), _stats, _manager.Config, _manager.RunSeed, forcedLevel);
+            _conversation.Open(message, _manager.Config.GetResponseSeconds(_stats.Health), _stats, _manager.Config, _manager.RunSeed);
         }
 
-        private void Schedule(float time, MessageData message)
+        // The next message arrives only after the previous one was answered or expired, so the story keeps its order.
+        private void DeliverNext()
         {
-            _scheduled.Add(new Scheduled { Time = time, Message = message });
-        }
-
-        private void Deliver()
-        {
-            for (int i = _scheduled.Count - 1; i >= 0; i--)
+            if (_nextIndex >= _messages.Count || Notifications.Count > 0 || _conversation.IsBusy)
             {
-                if (_scheduled[i].Time <= _elapsed)
-                {
-                    Notifications.Add(_scheduled[i].Message, _manager.Config.notificationLifetime);
-                    _scheduled.RemoveAt(i);
-                }
+                return;
             }
+
+            _nextArrivalIn -= Time.deltaTime;
+            if (_nextArrivalIn > 0f)
+            {
+                return;
+            }
+
+            Notifications.Add(_messages[_nextIndex], _manager.Config.notificationLifetime);
+            _nextIndex++;
+            _nextArrivalIn = MessageGap;
         }
 
         private void HandleResponded(MessageData message, PhraseType type, bool timedOut)
         {
-            _stats.Apply(type, message.effectMultiplier, _conversation.LastResponseSeconds, timedOut);
+            _stats.Apply(type, message, _conversation.LastResponseSeconds, timedOut);
             switch (type)
             {
                 case PhraseType.Yes: _summary.Yes++; break;
@@ -156,37 +142,17 @@ namespace DecirQueNo
                 default: _summary.No++; break;
             }
 
-            if (type == PhraseType.No)
+            if (message.isFinal)
             {
-                QueueInsistence(message);
+                _manager.LastFinalText = message.GetReply(type);
             }
         }
 
-        // A notification that expired without being opened: costs followers, gives a little health
-        // and brings the insistence, but it is not a No the player said.
+        // A notification that expired without being opened: it counts as an evasive answer with a surcharge.
         private void Expire(MessageData message)
         {
-            _stats.ApplyExpired(message.effectMultiplier, message.sender);
+            _stats.ApplyExpired(message);
             _summary.Expired++;
-            QueueInsistence(message);
-        }
-
-        private void QueueInsistence(MessageData message)
-        {
-            if (message.insistence == null)
-            {
-                return;
-            }
-
-            float arrival = _elapsed + InsistenceDelay;
-            if (arrival < _day.dayLength - InsistenceCutoff)
-            {
-                Schedule(arrival, message.insistence);
-            }
-            else
-            {
-                _manager.CarryOverMessages.Add(message.insistence);
-            }
         }
 
         private void UpdateClock()
@@ -210,7 +176,7 @@ namespace DecirQueNo
         {
             _ended = true;
 
-            // Notifications still waiting when the day ends expire. If the goal was reached they just vanish.
+            // Notifications still waiting when the day ends expire, unless the run ended by reaching the goal.
             foreach (Notification notification in Notifications.TakeAll())
             {
                 if (!goalReached)

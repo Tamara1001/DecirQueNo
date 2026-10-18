@@ -16,6 +16,8 @@ namespace DecirQueNo
 
         private const float TypingSeconds = 0.4f;
         private const float PulseBelowSeconds = 3f;
+        private const float ReplyMinSeconds = 3f;
+        private const float ReplySecondsPerChar = 0.04f;
 
         [SerializeField] private ConversationController _conversation;
         [SerializeField] private GameObject _root;
@@ -35,8 +37,14 @@ namespace DecirQueNo
         private readonly List<GameObject> _phraseButtons = new List<GameObject>();
         private Coroutine _typing;
         private Coroutine _shake;
+        private Coroutine _reply;
+        private TMP_Text _sendLabel;
+        private string _historyBase = "";
+        private bool _replying;
         private int _lastPhraseCount;
         private int _longestOption;
+
+        private bool ShowEmojis => GameManager.Instance.Config.showEmojis;
 
         public IReadOnlyList<WordButtonUI> BankButtons => _bankButtons;
         public bool SendInteractable => _sendButton.interactable;
@@ -56,7 +64,8 @@ namespace DecirQueNo
             _conversation.OnResponded += HandleResponded;
             _conversation.OnCanSendChanged += Refresh;
             _conversation.Timer.OnTick += HandleTick;
-            _sendButton.onClick.AddListener(_conversation.Send);
+            _sendButton.onClick.AddListener(HandleSendClicked);
+            _sendLabel = _sendButton.GetComponentInChildren<TMP_Text>();
 
             // The bar must shrink as time runs out, not only change color.
             UiFx.MakeHorizontalFill(_timerFill);
@@ -81,13 +90,18 @@ namespace DecirQueNo
             _root.SetActive(true);
             MessageData message = conversation.Message;
 
+            // Back from the reply screen of the previous conversation.
+            StopReply();
+            SetBuilderVisible(true);
+            SetSendLabel("Enviar");
+
             // The message "types" for a moment before it shows up.
             if (_typing != null)
             {
                 StopCoroutine(_typing);
             }
 
-            _typing = StartCoroutine(ShowMessage(message, conversation.Bank));
+            _typing = StartCoroutine(ShowMessage(message));
 
             ApplyButtonScale(conversation.Bank.Level.buttonScale);
 
@@ -110,34 +124,102 @@ namespace DecirQueNo
             {
                 int bankIndex = i;
                 WordButtonUI button = Instantiate(_wordButtonPrefab, _bankContainer);
-                button.Setup(bank[i], () => conversation.Builder.Add(bankIndex));
+                button.Setup(bank[i], () => conversation.Builder.Add(bankIndex), ShowEmojis);
                 _bankButtons.Add(button);
             }
 
             Refresh();
         }
 
-        private IEnumerator ShowMessage(MessageData message, BankBuilder.Bank bank)
+        private IEnumerator ShowMessage(MessageData message)
         {
-            string header = $"{message.sender} ({TimeAgo.Format(_conversation.OpenedAgeSeconds, GameManager.Instance.CurrentDayData.dayLength)})\n";
+            string ago = TimeAgo.Format(_conversation.OpenedAgeSeconds, GameManager.Instance.CurrentDayData.dayLength);
+            string header = $"{message.sender} ({ago})\n";
             _historyText.text = header + "...";
             yield return new WaitForSeconds(TypingSeconds);
-            _historyText.text = header + message.body + "\n\n" + BuildLegend(bank);
+            _historyBase = header + TextDisplay.ForScreen(message.body, ShowEmojis);
+            _historyText.text = IsFirstConversation() ? _historyBase + "\n\n" + TutorialHint : _historyBase;
             _typing = null;
         }
 
-        // How many words each answer takes, so the player can weigh the effort before building anything.
-        private static string BuildLegend(BankBuilder.Bank bank)
+        // Short tutorial: only the very first conversation of the run explains what to do.
+        private const string TutorialHint =
+            "Toca los fragmentos para armar una de las frases posibles y toca Enviar. Cada frase tiene un costo distinto. Cuidado con el tiempo.";
+
+        private static bool IsFirstConversation()
         {
-            string legend = "Palabras que hay que armar para responder:";
-            foreach (PhraseOption option in bank.Options)
+            PlayerStats stats = GameManager.Instance.Stats;
+            return stats.YesCount + stats.EvasiveCount + stats.NoCount + stats.ExpiredCount == 0;
+        }
+
+        private void HandleSendClicked()
+        {
+            if (_replying)
             {
-                string name = option.Type == PhraseType.Yes ? "Si" : option.Type == PhraseType.Maybe ? "Tal vez" : "No";
-                int count = option.Words.Count;
-                legend += $"\n  {name}: {count} {(count == 1 ? "palabra" : "palabras")}";
+                CloseReply();
+                return;
             }
 
-            return bank.IsTutorial ? legend + "\n(Practica: aca el No es corto)" : legend;
+            _conversation.Send();
+        }
+
+        private void SetSendLabel(string text)
+        {
+            if (_sendLabel != null)
+            {
+                _sendLabel.text = text;
+            }
+        }
+
+        private void SetBuilderVisible(bool visible)
+        {
+            _bankContainer.gameObject.SetActive(visible);
+            _phraseContainer.gameObject.SetActive(visible);
+            _timerBar.gameObject.SetActive(visible);
+        }
+
+        // Shows what Sam sent and the sender's answer. It closes by itself or when the player taps Continuar.
+        private IEnumerator ShowReply(MessageData message, PhraseType type, IReadOnlyList<string> words)
+        {
+            var phrase = new List<string>();
+            foreach (string word in words)
+            {
+                phrase.Add(TextDisplay.ForScreen(word, ShowEmojis));
+            }
+
+            string reply = TextDisplay.ForScreen(message.GetReply(type), ShowEmojis);
+            string speaker = message.isFinal ? "" : message.sender + ": ";
+            _historyText.text = _historyBase + "\n\nSam: " + string.Join(" ", phrase) + "\n\n" + speaker + reply;
+
+            SetBuilderVisible(false);
+            _sendButton.interactable = true;
+            SetSendLabel("Continuar");
+
+            yield return new WaitForSeconds(ReplyMinSeconds + reply.Length * ReplySecondsPerChar);
+            CloseReply();
+        }
+
+        private void StopReply()
+        {
+            if (_reply != null)
+            {
+                StopCoroutine(_reply);
+                _reply = null;
+            }
+
+            _replying = false;
+        }
+
+        private void CloseReply()
+        {
+            if (!_replying)
+            {
+                return;
+            }
+
+            StopReply();
+            _root.SetActive(false);
+            _conversation.Close();
         }
 
         private void ApplyButtonScale(float scale)
@@ -159,7 +241,11 @@ namespace DecirQueNo
             }
 
             _timerBar.localScale = Vector3.one;
-            _root.SetActive(false);
+
+            // The conversation stays open to show the sender's reply; CloseReply ends it.
+            StopReply();
+            _replying = true;
+            _reply = StartCoroutine(ShowReply(message, type, _conversation.LastWords));
         }
 
         private void HandleTick(float normalized)
@@ -182,7 +268,7 @@ namespace DecirQueNo
 
         private void Refresh()
         {
-            if (_conversation.Builder == null)
+            if (_conversation.Builder == null || _replying)
             {
                 return;
             }
@@ -207,7 +293,7 @@ namespace DecirQueNo
             {
                 int phrasePosition = position;
                 WordButtonUI button = Instantiate(_wordButtonPrefab, _phraseContainer);
-                button.Setup(builder.Bank[builder.Picked[position]], () => builder.RemoveAt(phrasePosition));
+                button.Setup(builder.Bank[builder.Picked[position]], () => builder.RemoveAt(phrasePosition), ShowEmojis);
                 button.SetState(true, PhraseColor);
                 _phraseButtons.Add(button.gameObject);
 

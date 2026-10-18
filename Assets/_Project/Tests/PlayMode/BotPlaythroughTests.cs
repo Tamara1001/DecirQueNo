@@ -40,6 +40,7 @@ namespace DecirQueNo.Tests
 
             AssertInvariants(report);
             Assert.AreEqual(Ending.Sad, report.Ending, "Saying Yes to everything must end badly.");
+            Assert.GreaterOrEqual(report.FinalFollowers, report.GoalFollowers, "Saying Yes to everything reaches the goal.");
         }
 
         [UnityTest]
@@ -49,7 +50,8 @@ namespace DecirQueNo.Tests
             yield return new BotPlayer(new MentalHealthStrategy(), report).Play();
 
             AssertInvariants(report);
-            Assert.GreaterOrEqual(report.No, 5, "A bot that always goes for the No should land several of them.");
+            Assert.AreEqual(1, report.No, "The real No exists only in the final message.");
+            Assert.AreEqual(8, report.Maybe, "Before the final message the bot takes the lukewarm No.");
             Assert.AreEqual(Ending.Happy, report.Ending, "Learning to say No must lead to the happy ending.");
         }
 
@@ -60,7 +62,7 @@ namespace DecirQueNo.Tests
             yield return new BotPlayer(new AverageStrategy(), report).Play();
 
             AssertInvariants(report);
-            Assert.GreaterOrEqual(report.No, 5, "A slow, average player must be able to land the No answers.");
+            Assert.AreEqual(1, report.No, "A slow, average player must be able to land the final No.");
             Assert.AreEqual(Ending.Happy, report.Ending, "Going for the No at a human pace must still reach the happy ending.");
         }
 
@@ -72,6 +74,7 @@ namespace DecirQueNo.Tests
 
             AssertInvariants(report);
             Assert.Greater(report.Expired, 0, "Every notification should have expired.");
+            Assert.AreEqual(9, report.Expired, "Every message of the script expires.");
             Assert.AreEqual(0, report.Yes + report.Maybe + report.No, "The ignorer never answers anything.");
             Assert.AreNotEqual(Ending.Happy, report.Ending, "Ignoring everything must not be a way to the happy ending.");
         }

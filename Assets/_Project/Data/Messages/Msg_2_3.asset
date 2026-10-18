@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Msg_2_3
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Christian
+  body: "Te consegu\xED al patrocinador m\xE1s exclusivo del medio, linda.\nPag\xF3
+    una fortuna por una transmisi\xF3n privada contigo esta madrugada.\nLe pas\xE9
+    tu direcci\xF3n para los regalos de la marca.\nCon\xE9ctate y s\xE9 encantadora."
+  level: 2
+  isFinal: 0
+  yesWords:
+  - "Cumplir\xE9 con"
+  - la llamada,
+  - supongo que
+  - no queda
+  - "otra. \U0001F630"
+  evasiveWords:
+  - Me asusta
+  - demasiado esto...
+  - pero me
+  - "conectar\xE9 hoy. \U0001F91D"
+  - "est\xE1 bien,"
+  noWords: []
+  yesReply: "Sab\xEDa que ver\xEDas el panorama completo. Eres una profesional nata\nEste
+    cliente tiene el poder de ponerte en las grandes ligas. Te hablar\xE1 en breve,
+    s\xE9 impecable."
+  evasiveReply: "\xBFDesconf\xEDas de m\xED despu\xE9s de todo lo que he invertido
+    para cuidarte?\nEres brillante, no dejes que el miedo te sabotee justo cuando
+    estamos por ganar. Entra al enlace ahora."
+  noReply: 
+  sourceBank:
+  - "Cumplir\xE9 con"
+  - la llamada,
+  - supongo que
+  - no queda
+  - "otra. \U0001F630"
+  - Me asusta
+  - demasiado esto...
+  - pero me
+  - "conectar\xE9 hoy. \U0001F91D"
+  - "est\xE1 bien,"

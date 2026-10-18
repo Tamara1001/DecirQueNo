@@ -9,7 +9,6 @@ namespace DecirQueNo
     {
         None,
         Happy,
-        Neutral,
         Sad
     }
 
@@ -34,16 +33,10 @@ namespace DecirQueNo
         public int CurrentDay { get; private set; }
         public Ending Ending { get; private set; }
 
-        // Seeds the distractors and bank order of this run.
+        // Seeds the bank order of this run.
         public int RunSeed { get; private set; }
 
-        // The first conversation of a run is a practice one with the shortest No.
-        public bool PracticeDone { get; set; }
-
         private readonly List<List<MessageData>> _schedule = new List<List<MessageData>>();
-
-        // Messages queued for the next day (e.g. insistence after a No).
-        public List<MessageData> CarryOverMessages { get; } = new List<MessageData>();
 
         public DayData CurrentDayData =>
             CurrentDay >= 1 && CurrentDay <= Config.days.Count ? Config.days[CurrentDay - 1] : null;
@@ -117,6 +110,9 @@ namespace DecirQueNo
 
         public DaySummary LastSummary { get; set; }
 
+        // Closing monologue of the final message, shown in the ending.
+        public string LastFinalText { get; set; }
+
         public void StartNewGame()
         {
             ResetGame();
@@ -139,8 +135,7 @@ namespace DecirQueNo
             CurrentDay = 1;
             Ending = Ending.None;
             LastSummary = null;
-            PracticeDone = false;
-            CarryOverMessages.Clear();
+            LastFinalText = null;
             BuildSchedule();
         }
 
@@ -150,7 +145,7 @@ namespace DecirQueNo
             return day >= 1 && day <= _schedule.Count ? _schedule[day - 1] : new List<MessageData>();
         }
 
-        // Shuffles the pool with the run seed and splits it across the days.
+        // Splits the pool across the days keeping the script order.
         private void BuildSchedule()
         {
             _schedule.Clear();
@@ -158,13 +153,6 @@ namespace DecirQueNo
             if (Config.pool != null)
             {
                 pool.AddRange(Config.pool.messages);
-            }
-
-            var rng = new System.Random(RunSeed);
-            for (int i = pool.Count - 1; i > 0; i--)
-            {
-                int j = rng.Next(i + 1);
-                (pool[i], pool[j]) = (pool[j], pool[i]);
             }
 
             int next = 0;
@@ -193,12 +181,8 @@ namespace DecirQueNo
 
         private Ending EvaluateEnding()
         {
-            if (Stats.Health >= Config.happyMinHealth && Stats.NoCount >= Config.happyMinNoCount)
-            {
-                return Ending.Happy;
-            }
-
-            return Stats.Health < Config.sadHealthBelow ? Ending.Sad : Ending.Neutral;
+            // Only the real No of the final message leads to the happy ending.
+            return Stats.NoCount > 0 ? Ending.Happy : Ending.Sad;
         }
 
         public void ContinueAfterSleep()

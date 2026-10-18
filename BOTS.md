@@ -10,6 +10,8 @@ Bots que juegan la partida completa con el **Unity Test Framework** (PlayMode). 
 - El tiempo corre a `timeScale 30` y `maximumDeltaTime 1`. Los 3 tests tardan unos 40 s.
 - Cada test guarda su reporte en `BotReports/<Bot>.txt` y lo imprime con el prefijo `[BotReport]`.
 
+> **Estado (2026-10-18):** el guion del tablero de Miro reemplazó el pool aleatorio. Los bots y las aserciones ya se adaptaron (solo existe 1 No real, en el último mensaje; antes los bots toman la evasiva), pero **todavía no se corrieron ni se balancearon** con los números nuevos. Las tablas de abajo son de la versión anterior (MVP) y están desactualizadas. Hay tests nuevos de datos: `ScriptBankTests` (bancos, frases y orden del guion).
+
 ## Los bots (reglas del "No" difícil)
 | Bot | Estrategia | Reacción / click |
 |---|---|---|

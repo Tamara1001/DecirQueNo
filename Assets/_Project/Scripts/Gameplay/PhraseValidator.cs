@@ -23,7 +23,7 @@ namespace DecirQueNo
 
         private static bool Matches(IReadOnlyList<string> expected, IList<string> actual)
         {
-            if (expected.Count != actual.Count)
+            if (expected.Count == 0 || expected.Count != actual.Count)
             {
                 return false;
             }

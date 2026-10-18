@@ -21,7 +21,7 @@ namespace DecirQueNo
             PlayerStats stats = manager.Stats;
             _summaryText.text = s == null
                 ? "Resumen"
-                : $"Dia {s.Day} terminado\nSi: {s.Yes}  Tal vez: {s.Maybe}  No: {s.No}  Expirados: {s.Expired}\n" +
+                : $"Dia {s.Day} terminado\nSi: {s.Yes}  Evasiva: {s.Maybe}  No: {s.No}  Expirados: {s.Expired}\n" +
                   $"Seguidores: {stats.Followers:N0} ({s.FollowersDelta:+#,0;-#,0;0})";
 
             // The mirror shows the health without numbers: dark red when low, bright when high.

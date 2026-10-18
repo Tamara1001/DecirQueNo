@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DecirQueNo
 {
-    // Builds the word bank and the valid phrases for a message at the current No level.
+    // Builds the word bank and the valid phrases for a message. The bank is the union of the phrases, shuffled.
     public static class BankBuilder
     {
         public class Bank
@@ -12,38 +12,35 @@ namespace DecirQueNo
             public List<PhraseOption> Options = new List<PhraseOption>();
             public NoLevelConfig Level;
             public int LevelIndex;
-            public bool IsTutorial;
         }
 
-        // forcedLevelIndex >= 0 overrides the level the health would give (used for the practice message).
-        public static Bank Build(MessageData message, GameConfig config, int health, int seed, int forcedLevelIndex = -1)
+        public static Bank Build(MessageData message, GameConfig config, int health, int seed)
         {
-            int levelIndex = forcedLevelIndex >= 0 ? forcedLevelIndex : config.GetNoLevelIndex(health);
+            int levelIndex = config.GetNoLevelIndex(health);
             var bank = new Bank
             {
                 LevelIndex = levelIndex,
                 Level = config.noLevels[levelIndex],
-                IsTutorial = forcedLevelIndex >= 0,
             };
 
-            int noCount = Math.Min(bank.Level.wordCount, message.noWords.Count);
             bank.Options.Add(new PhraseOption(PhraseType.Yes, new List<string>(message.yesWords)));
-            bank.Options.Add(new PhraseOption(PhraseType.Maybe, new List<string>(message.maybeWords)));
-            bank.Options.Add(new PhraseOption(PhraseType.No, message.noWords.GetRange(0, noCount)));
+            if (message.evasiveWords.Count > 0)
+            {
+                bank.Options.Add(new PhraseOption(PhraseType.Maybe, new List<string>(message.evasiveWords)));
+            }
+
+            if (message.noWords.Count > 0)
+            {
+                bank.Options.Add(new PhraseOption(PhraseType.No, new List<string>(message.noWords)));
+            }
 
             foreach (PhraseOption option in bank.Options)
             {
                 bank.Words.AddRange(option.Words);
             }
 
-            var rng = new Random(seed + StableHash(message.name) + health);
-            var pool = new List<string>(config.distractorPool);
-            pool.RemoveAll(w => bank.Words.Contains(w));
-            Shuffle(pool, rng);
-            int distractors = Math.Min(bank.Level.distractors, pool.Count);
-            bank.Words.AddRange(pool.GetRange(0, distractors));
-
-            Shuffle(bank.Words, rng);
+            // The order depends on the run and the message only, so it does not change while the player thinks.
+            Shuffle(bank.Words, new Random(seed + StableHash(message.name)));
             return bank;
         }
 

@@ -3,35 +3,36 @@ using UnityEngine;
 
 namespace DecirQueNo
 {
+    // Health is the hidden sanity. Evasive answers from level 2 on are the lukewarm No.
     public class PlayerStats
     {
         private readonly GameConfig _config;
-        private int _noStreak;
         private float _totalResponseSeconds;
         private int _responses;
 
         public int Followers { get; private set; }
         public int Health { get; private set; }
 
-        // Why the followers last changed, so the HUD can explain it.
-        public string LastFollowersReason { get; private set; }
-
         public int YesCount { get; private set; }
-        public int MaybeCount { get; private set; }
+        public int EvasiveCount { get; private set; }
+
+        // Real No answers (only the final message has one).
         public int NoCount { get; private set; }
         public int ExpiredCount { get; private set; }
         public int TimeoutCount { get; private set; }
-        public int BestNoStreak { get; private set; }
 
         public float AverageResponseSeconds => _responses == 0 ? 0f : _totalResponseSeconds / _responses;
+
+        // Why the followers last changed, so the HUD can explain it.
+        public string LastFollowersReason { get; private set; }
 
         public event Action<int> OnFollowersChanged;
         public event Action<int> OnHealthChanged;
 
-        // Old and new No level index. A lower index means the No got shorter (easier).
+        // Old and new difficulty tier. A lower index means an easier tier.
         public event Action<int, int> OnNoLevelChanged;
 
-        // 0 = easiest No (high health), up to noLevels.Count - 1 (low health).
+        // 0 = easiest tier (high sanity), up to noLevels.Count - 1 (low sanity).
         public int NoLevelIndex => _config.GetNoLevelIndex(Health);
 
         public PlayerStats(GameConfig config)
@@ -42,29 +43,14 @@ namespace DecirQueNo
         }
 
         // Applies the effects of an answer the player gave.
-        public void Apply(PhraseType type, float multiplier = 1f, float responseSeconds = 0f, bool timedOut = false)
+        public void Apply(PhraseType type, MessageData message, float responseSeconds = 0f, bool timedOut = false)
         {
             switch (type)
             {
-                case PhraseType.Yes:
-                    YesCount++;
-                    _noStreak = 0;
-                    break;
-                case PhraseType.Maybe:
-                    MaybeCount++;
-                    _noStreak = 0;
-                    break;
-                default:
-                    NoCount++;
-                    _noStreak++;
-                    BestNoStreak = Mathf.Max(BestNoStreak, _noStreak);
-                    break;
+                case PhraseType.Yes: YesCount++; break;
+                case PhraseType.Maybe: EvasiveCount++; break;
+                default: NoCount++; break;
             }
-
-            // Saying No several times in a row pays a little extra health.
-            int streakBonus = type == PhraseType.No
-                ? Mathf.Min(_noStreak - 1, _config.noStreakBonusCap) * _config.noStreakBonusHealth
-                : 0;
 
             if (timedOut)
             {
@@ -74,18 +60,16 @@ namespace DecirQueNo
             _responses++;
             _totalResponseSeconds += responseSeconds;
 
-            string answer = type == PhraseType.Yes ? "Si" : type == PhraseType.Maybe ? "Tal vez" : "No";
-            AddFollowers(_config.GetFollowers(type, multiplier), timedOut ? "Se acabo el tiempo (Si)" : $"Dijiste {answer}");
-            AddHealth(_config.GetHealth(type, multiplier) + streakBonus);
+            string answer = type == PhraseType.Yes ? "Si" : type == PhraseType.Maybe ? "Evasiva" : "No";
+            AddFollowers(_config.GetFollowers(type, message), timedOut ? "Se acabo el tiempo (Si)" : $"Dijiste {answer}");
+            AddHealth(_config.GetHealth(type, message));
         }
 
-        // A notification expired without being opened. It is not a No the player said.
-        public void ApplyExpired(float multiplier = 1f, string sender = null)
+        // A notification expired without being opened. It is not an answer the player gave.
+        public void ApplyExpired(MessageData message)
         {
             ExpiredCount++;
-            AddFollowers(Mathf.RoundToInt(_config.expireFollowers * multiplier),
-                string.IsNullOrEmpty(sender) ? "Mensaje sin abrir" : $"{sender} sin abrir");
-            AddHealth(Mathf.RoundToInt(_config.expireHealth * multiplier));
+            AddFollowers(_config.GetExpiredFollowers(message), $"{message.sender} sin abrir");
         }
 
         public void AddFollowers(int amount, string reason = null)

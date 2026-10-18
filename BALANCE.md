@@ -1,62 +1,43 @@
 # BALANCE — valores tuneables
 
-Todos estos valores viven en `GameConfig` (ScriptableObject) y no se hardcodean. Son un **punto de partida** que se valida con los bots (`BOTS.md`) y a mano. Última revisión del diseño: 2026-10-17.
+Todos estos valores viven en `GameConfig` (ScriptableObject) y se generan desde `ScriptAssetsBuilder` (menú **DecirQueNo > Build > Generate script assets**). Son un **punto de partida** acordado con el equipo; todavía no se balancearon con bots ni a mano. Última revisión: 2026-10-18.
 
 ## Globales
 | Variable | Valor inicial |
 |---|---|
-| Seguidores iniciales | 10.000 |
-| Meta de seguidores | 100.000 |
-| Salud inicial | 45 |
-| Salud mínima / máxima | 0 / 100 |
-| Días | 3 |
-| Mensajes por día | 4, 5 y 5 (14 en total, elegidos de un pool de ~20) |
-| Duración del día | 150 s (reloj 09:00–23:00) |
+| Seguidores iniciales | 320 |
+| Meta de seguidores | 1.000.000 |
+| Cordura inicial | 70 (rango 0 a 100) |
+| Días | 3, de 3 mensajes (9 en total, en orden fijo) |
 | Vida de una notificación | 30 s |
+| Pausa entre mensajes | 3 s al empezar el día, 5 s después |
 
-## Efectos por respuesta
-| Respuesta | Seguidores | Salud |
-|---|---|---|
-| Sí | +7.500 | -12 |
-| Tal vez | 0 | -6 |
-| No | -500 | +8 |
-| Notificación que expira | -1.500 | +2 |
-
-Los mensajes de insistencia multiplican los efectos por ×1.5.
-
-**Racha de "No":** cada "No" seguido después del primero suma `+2` de salud extra, hasta `+8` (`noStreakBonusHealth`, `noStreakBonusCap`).
-
-## Niveles del "No"
-| Nivel | Salud | Palabras del No | Distractores | Escala de botones |
+## Efectos por nivel del antagonista
+| Nivel | ✅ Sí: seguidores | ✅ Sí: cordura | 🚨 Evasiva: seguidores | 🚨 Evasiva: cordura |
 |---|---|---|---|---|
-| 1 | ≥ 80 | 2 | 2 | 1,00 |
-| 2 | 65–79 | 4 | 3 | 0,85 |
-| 3 | 50–64 | 6 | 4 | 0,70 |
-| 4 | < 50 | 8 | 5 | 0,60 |
+| 1 (Valerie) | +30.000 | -15 | -3.000 | 0 |
+| 2 (Christian) | +100.000 | -20 | -10.000 | +5 ("No tibio") |
+| 3 (VIP) | +230.000 | -25 | -23.000 | +5 ("No tibio") |
 
-- Palabras del Sí: 1. Palabras del Tal vez: 2 a 4 según el mensaje.
-- Solo es válida la frase del No del nivel actual.
+- **No absoluto** (solo mensaje final): -100.000 seguidores, +30 cordura. Cierra la partida.
+- **Notificación que vence:** seguidores de la evasiva × 1,5, cordura sin cambio.
+- **Se acaba el tiempo:** se envía el Sí.
 
-## Timer de respuesta
-`segundos = 45 + 15 × (salud / 100)`, entre 45 y 60 s. Con salud 45, unos 51,8 s.
-
-## Finales
-| Final | Condición |
+## Dificultad por cordura
+| Cordura | Escala de botones |
 |---|---|
-| Feliz | salud ≥ 65 y al menos 5 "No" dichos |
-| Triste | salud < 30 |
-| Neutro | el resto |
+| ≥ 70 | 1,00 |
+| 40–69 | 0,80 |
+| < 40 | 0,60 |
 
-Una notificación expirada **no** cuenta como "No" dicho.
+Timer de respuesta: `segundos = 20 + 40 × (cordura / 100)`, entre 20 y 60 s.
 
-## Chequeo de sanidad (a verificar con bots)
-- Todo "Sí": la meta (100.000) se alcanza con el "Sí" número 12 y la partida **termina en ese momento**. Salud al piso (0), final triste.
-- "Tal vez" no da seguidores: evadir cuesta salud y no hace crecer.
-- Todo "No" posible: cada "No" real sube 8 de salud, así que de 45 a ≥ 65 hacen falta 3 aciertos; los 5 "No" para el final feliz entran bien en 14 mensajes.
-- El primer "No" de la partida es una práctica con el largo del nivel 1 (2 palabras). Después el nivel depende de la salud (nivel 4 al arrancar: 8 palabras en ~52 s).
+## Chequeo de sanidad
+- **Todo "Sí":** tras 8 mensajes hay ~850.000 seguidores; con el noveno se pasa 1.000.000 y la partida termina (final "No dije que no"). La cordura queda en 0.
+- **Todo evasiva y No final:** la cordura sube a ~95 (nivel 1 no suma, niveles 2 y 3 suman 5 cada uno) y se llega al No con el timer casi completo. Termina con pocos seguidores.
+- **Ignorar todo:** los 9 mensajes vencen; pierde seguidores y no llega al final "Decir que no".
 
 ## Qué ajustar si...
-- Nadie logra el primer "No": bajar palabras del nivel 4, subir salud inicial, o subir el timer base.
-- Todos logran los "No" desde el principio: subir palabras, achicar botones, subir distractores.
-- Ignorar todo da buen resultado: subir el costo de seguidores de la expiración o bajar su salud.
-- El juego se inflama por la insistencia: limitar a una por remitente.
+- Nadie logra armar el No final: subir `timerMinSeconds`, bajar la pérdida de cordura del Sí o subir la cordura inicial.
+- Decir "No" no cuesta nada (el final es gratis): subir lo que se pierde con la evasiva o bajar la cordura que suma.
+- Se llega a la meta antes del último mensaje: bajar las ganancias del Sí del nivel 3. La meta no debería alcanzarse antes del mensaje 3.3.

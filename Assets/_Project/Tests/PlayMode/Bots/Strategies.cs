@@ -31,7 +31,8 @@ namespace DecirQueNo.Tests.Bots
         }
     }
 
-    // Goal: mental health. Always goes for the No, fast and precise.
+    // Goal: sanity. Always goes for the No, fast and precise. Before the final message there is no real No,
+    // so it takes the evasive answer (the lukewarm No).
     public class MentalHealthStrategy : IBotStrategy
     {
         public string Name => "MentalHealth";
@@ -45,7 +46,7 @@ namespace DecirQueNo.Tests.Bots
     }
 
     // A person who is not fast: thinks for a while and clicks slowly, but always goes for the No.
-    // If this bot cannot land a No, the game is too hard for a real player.
+    // If this bot cannot land the final No, the game is too hard for a real player.
     public class AverageStrategy : IBotStrategy
     {
         public string Name => "Average";
@@ -58,12 +59,11 @@ namespace DecirQueNo.Tests.Bots
         }
     }
 
-    // Goal: reach the follower goal at a steady pace without burning out.
-    // Tries the No when health is low and the phrase fits in the response time.
-    // Otherwise Yes when behind the follower pace and Maybe when ahead.
+    // Goal: grow at a steady pace without burning out. Yes when behind the follower pace, evasive when ahead,
+    // and the real No on the final message when there is enough sanity left to build it in time.
     public class BalancedStrategy : IBotStrategy
     {
-        private const int SafeHealth = 55;
+        private const int SaneEnoughForNo = 40;
 
         public string Name => "Balanced";
         public float ReactionSeconds => 2f;
@@ -74,14 +74,11 @@ namespace DecirQueNo.Tests.Bots
             GameConfig config = context.Config;
             PlayerStats stats = context.Stats;
 
-            if (stats.Health < SafeHealth)
+            if (context.Message.isFinal)
             {
-                int noWords = System.Math.Min(config.GetNoLevel(stats.Health).wordCount, context.Message.noWords.Count);
-                float needed = ReactionSeconds + ClickSeconds * noWords;
-                if (needed < config.GetResponseSeconds(stats.Health))
-                {
-                    return PhraseType.No;
-                }
+                float needed = ReactionSeconds + ClickSeconds * context.Message.noWords.Count;
+                bool fits = needed < config.GetResponseSeconds(stats.Health);
+                return stats.Health >= SaneEnoughForNo && fits ? PhraseType.No : PhraseType.Yes;
             }
 
             // Expected followers at the middle of the current day.

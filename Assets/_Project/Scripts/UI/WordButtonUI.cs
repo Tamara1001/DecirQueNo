@@ -11,7 +11,8 @@ namespace DecirQueNo
         [SerializeField] private TMP_Text _label;
         [SerializeField] private Image _background;
 
-        public string Word => _label.text;
+        // The original fragment (what the phrase validator compares), not what is shown on screen.
+        public string Word { get; private set; }
         public bool Interactable => _button.interactable;
 
         // Same path a mouse click takes. Also used by the test bots.
@@ -31,9 +32,10 @@ namespace DecirQueNo
             }
         }
 
-        public void Setup(string word, Action onClick)
+        public void Setup(string word, Action onClick, bool showEmojis = false)
         {
-            _label.text = word;
+            Word = word;
+            _label.text = TextDisplay.ForScreen(word, showEmojis);
             _button.onClick.RemoveAllListeners();
             _button.onClick.AddListener(() => onClick?.Invoke());
         }

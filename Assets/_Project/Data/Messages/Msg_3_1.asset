@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Msg_3_1
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Contacto VIP
+  body: "Buenas noches, Samantha. Disculpa la hora.\nLlevo semanas siguiendo tu contenido.
+    Tienes una sensibilidad que hace mucha falta en redes.\nAcord\xE9 con Christian
+    patrocinar tu pr\xF3ximo proyecto. Me encantar\xEDa una videollamada breve para
+    conocerte mejor."
+  level: 3
+  isFinal: 0
+  yesWords:
+  - ya entro
+  - pero esto
+  - me da
+  - pena tan
+  - tarde igual
+  evasiveWords:
+  - agradezco el
+  - apoyo pero
+  - me da
+  - desconfianza la
+  - "hora se\xF1or"
+  noWords: []
+  yesReply: 'No sientas pena, Samantha, el talento no tiene horario.
+
+    Es solo
+    una charla entre profesionales. Abre el enlace cuando gustes.'
+  evasiveReply: "Entiendo tus precauciones, habla muy bien de ti.\nChristian te garantiz\xF3
+    mi seriedad y la cifra pactada. Entra un momento, por favor."
+  noReply: 
+  sourceBank:
+  - ya entro
+  - pero esto
+  - me da
+  - pena tan
+  - tarde igual
+  - agradezco el
+  - apoyo pero
+  - me da
+  - desconfianza la
+  - "hora se\xF1or"

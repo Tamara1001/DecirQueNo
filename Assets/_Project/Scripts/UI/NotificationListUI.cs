@@ -22,7 +22,7 @@ namespace DecirQueNo
             _day.Notifications.OnChanged += Refresh;
             _day.Notifications.OnExpired += HandleExpired;
             _conversation.OnOpened += HandleOpened;
-            _conversation.OnResponded += HandleResponded;
+            _conversation.OnClosed += HandleClosed;
             _subscribed = true;
             Refresh();
         }
@@ -39,7 +39,7 @@ namespace DecirQueNo
             if (_conversation != null)
             {
                 _conversation.OnOpened -= HandleOpened;
-                _conversation.OnResponded -= HandleResponded;
+                _conversation.OnClosed -= HandleClosed;
             }
         }
 
@@ -48,7 +48,7 @@ namespace DecirQueNo
             _root.SetActive(false);
         }
 
-        private void HandleResponded(MessageData message, PhraseType type, bool timedOut)
+        private void HandleClosed()
         {
             _root.SetActive(true);
             Refresh();

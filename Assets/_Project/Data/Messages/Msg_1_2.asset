@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Msg_1_2
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Valerie
+  body: "Oye linda \U0001F48B\nRevis\xE9 tu perfil y est\xE1 aburrid\xEDsimo\nEn
+    el live vamos a fingir una pelea y lloras en c\xE1mara o no te vuelvo a invitar.
+    \U0001F485"
+  level: 1
+  isFinal: 0
+  yesWords:
+  - "\xA1Me encanta! \U0001F929"
+  - "\xA1yo act\xFAo"
+  - todo de
+  - una vez,
+  - "cuenta conmigo! \U0001F64C"
+  evasiveWords:
+  - "\xBFY si"
+  - mejor hacemos
+  - algo divertido
+  - sin tanto
+  - "drama? \U0001F648"
+  noWords: []
+  yesReply: "Esa es la actitud hermosa.\nTres minutos y te mando el enlace, arr\xE9glate
+    bien \U0001F484\u2728"
+  evasiveReply: "Ay no, qu\xE9 pereza tu inseguridad\nSi vas a llorar de verdad mejor
+    busco a otra \U0001F644"
+  noReply: 
+  sourceBank:
+  - "\xA1Me encanta! \U0001F929"
+  - "\xA1yo act\xFAo"
+  - todo de
+  - una vez,
+  - "cuenta conmigo! \U0001F64C"
+  - "\xBFY si"
+  - mejor hacemos
+  - algo divertido
+  - sin tanto
+  - "drama? \U0001F648"

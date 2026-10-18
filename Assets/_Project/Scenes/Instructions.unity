@@ -176,10 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "COMO SE JUEGA\n\nTe llegan mensajes. Abrilos y arm\xE1 la respuesta tocando
-    las palabras en orden.\nDecir Si es facil. Decir No cuesta: hay que armar una
-    frase larga antes de que se acabe el tiempo.\nCuid\xE1 tu salud mental y lleg\xE1
-    a los seguidores.\nSi no abr\xEDs un mensaje a tiempo, desaparece."
+  m_text: "Tu cuarto es peque\xF1o, tus d\xEDas son id\xE9nticos y tu mayor terror es volverte invisible. Una notificaci\xF3n acaba de iluminar tu pantalla: alguien con millones de ojos te ofrece una salida hacia la cima.\nLa meta: 1.000.000 de seguidores. El problema es lo que estar\xE1s dispuesta a conceder.\n\nC\xD3MO SE JUEGA\nSos Sam. Te llegan notificaciones: abr\xED una y arm\xE1 tu respuesta tocando los fragmentos en orden. Hay m\xE1s de una frase posible: elegir cu\xE1l armar es la decisi\xF3n. El tiempo corre desde que abr\xEDs la conversaci\xF3n.\nSi no abr\xEDs un mensaje a tiempo, desaparece y te cuesta seguidores."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -209,9 +206,9 @@ MonoBehaviour:
   m_fontSize: 44
   m_fontSizeBase: 44
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 40
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

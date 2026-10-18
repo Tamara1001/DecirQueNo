@@ -12,61 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c1094d9ee9c1b744a4349770122c90a, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::DecirQueNo.GameConfig
-  startFollowers: 10000
-  goalFollowers: 100000
-  startHealth: 45
+  startFollowers: 320
+  goalFollowers: 1000000
+  startHealth: 70
   maxHealth: 100
   noLevels:
-  - minHealth: 80
-    wordCount: 2
-    distractors: 2
+  - minHealth: 70
     buttonScale: 1
-  - minHealth: 65
-    wordCount: 4
-    distractors: 3
-    buttonScale: 0.85
-  - minHealth: 50
-    wordCount: 6
-    distractors: 4
-    buttonScale: 0.7
+  - minHealth: 40
+    buttonScale: 0.8
   - minHealth: 0
-    wordCount: 8
-    distractors: 5
     buttonScale: 0.6
-  distractorPool:
-  - Banana
-  - Mesa
-  - Perro
-  - Luz
-  - Sol
-  - Casa
-  - Nube
-  - Auto
-  - Rio
-  - Pan
-  - Luna
-  - Mar
-  - Palabra_1
-  - Palabra_2
-  timerMinSeconds: 45
+  timerMinSeconds: 20
   timerMaxSeconds: 60
-  happyMinHealth: 65
-  happyMinNoCount: 5
-  sadHealthBelow: 30
-  yesFollowers: 7500
-  yesHealth: -12
-  maybeFollowers: 0
-  maybeHealth: -6
-  noFollowers: -500
-  noHealth: 8
-  noStreakBonusHealth: 2
-  noStreakBonusCap: 4
+  levels:
+  - yesFollowers: 30000
+    evasiveFollowers: -3000
+    yesHealth: -15
+    evasiveHealth: 0
+  - yesFollowers: 100000
+    evasiveFollowers: -10000
+    yesHealth: -20
+    evasiveHealth: 5
+  - yesFollowers: 230000
+    evasiveFollowers: -23000
+    yesHealth: -25
+    evasiveHealth: 5
+  noFollowers: -100000
+  noHealth: 30
   notificationLifetime: 30
-  expireFollowers: -1500
-  expireHealth: 2
+  expireFollowersMultiplier: 1.5
   days:
   - {fileID: 11400000, guid: ac935409b7dd4664891537ef1faaa5e0, type: 2}
   - {fileID: 11400000, guid: db20c0c7ffa1bcc4a8878f7c3fd5eae7, type: 2}
   - {fileID: 11400000, guid: 1e7c2977868bc634cbb49e2f083d1c3c, type: 2}
   pool: {fileID: 11400000, guid: e83493997d19cfd43b167d82b9207b37, type: 2}
-  messagesPerDay: 040000000500000005000000
+  messagesPerDay: 030000000300000003000000
+  showEmojis: 0

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a258911bdd0a9e540a5b7c0d8fca8bdd, type: 3}
+  m_Name: Msg_3_3
+  m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
+  sender: Contacto VIP
+  body: "Buenos d\xEDas, Samantha.\nLo de anoche fue solo el comienzo.\nGraba un
+    video ahora. Tu audiencia ama verte destrozada, el morbo vende m\xE1s que cualquier
+    otra cosa."
+  level: 3
+  isFinal: 1
+  yesWords:
+  - "Est\xE1 bien,"
+  - he hecho
+  - de todo
+  - para llegar
+  - "hasta aqu\xED,"
+  - ya no
+  - me queda
+  - "m\xE1s que"
+  - ceder ahora.
+  evasiveWords: []
+  noWords:
+  - No, no
+  - voy a
+  - abrir
+  - "la c\xE1mara,"
+  - no voy
+  - a exponerme
+  - ante nadie
+  - y no
+  - voy a
+  - contestar
+  - un solo
+  - "mensaje m\xE1s."
+  yesReply: "Final de la ruta\n\nYa que m\xE1s da, si ya perd\xED todo incluso a
+    mi misma..\n\nM\xE1s n\xFAmeros, m\xE1s vistas y eso significa que no estoy sola..."
+  evasiveReply: 
+  noReply: "Final de la ruta\n\nY si eso significa perder la cuenta, el dinero, los
+    contratos y quedarme sola sin nada despu\xE9s de haber destruido todo por complacerlos,
+    que as\xED sea. Hasta aqu\xED llegu\xE9..\n\nNO"
+  sourceBank:
+  - "la c\xE1mara,"
+  - no voy
+  - un solo
+  - "Est\xE1 bien,"
+  - a exponerme
+  - he hecho
+  - "mensaje m\xE1s."
+  - ante nadie
+  - de todo
+  - para llegar
+  - No, no
+  - y no
+  - "hasta aqu\xED,"
+  - ya no
+  - voy a
+  - me queda
+  - "m\xE1s que"
+  - ceder ahora.
+  - abrir
+  - contestar
