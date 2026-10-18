@@ -9,6 +9,8 @@ namespace DecirQueNo
         private const float MinCountPerSecond = 2000f;
         private const float PunchScale = 0.15f;
         private const float PunchDecay = 6f;
+        private const float DeltaSeconds = 3.5f;
+        private const float DeltaOffsetY = 60f;
 
         [SerializeField] private TMP_Text _followersText;
         [SerializeField] private TMP_Text _healthDebugText;
@@ -19,6 +21,8 @@ namespace DecirQueNo
         private int _target;
         private int _shownInt = -1;
         private float _punch;
+        private TMP_Text _deltaText;
+        private float _deltaShownFor;
 
         private void Start()
         {
@@ -63,6 +67,8 @@ namespace DecirQueNo
                 RefreshFollowers();
             }
 
+            UpdateDelta();
+
             if (_punch > 0f)
             {
                 _punch = Mathf.Max(0f, _punch - PunchDecay * Time.unscaledDeltaTime);
@@ -74,8 +80,47 @@ namespace DecirQueNo
 
         private void HandleFollowers(int followers)
         {
+            int delta = followers - _target;
             _target = followers;
             _punch = 1f;
+            ShowDelta(delta, _stats.LastFollowersReason);
+        }
+
+        // Says why the counter moved, since it can move while another chat is open.
+        private void ShowDelta(int delta, string reason)
+        {
+            if (delta == 0)
+            {
+                return;
+            }
+
+            if (_deltaText == null)
+            {
+                _deltaText = Instantiate(_followersText, _followersText.transform.parent);
+                _deltaText.name = "FollowersDelta";
+                _deltaText.rectTransform.anchoredPosition += new Vector2(0f, -DeltaOffsetY);
+                _deltaText.fontSize = _followersText.fontSize * 0.8f;
+                _deltaText.raycastTarget = false;
+            }
+
+            string sign = delta > 0 ? "+" : "-";
+            string text = $"{sign}{Mathf.Abs(delta):N0}";
+            _deltaText.text = string.IsNullOrEmpty(reason) ? text : $"{text}  ({reason})";
+            _deltaText.color = delta > 0 ? new Color(0.6f, 1f, 0.7f) : new Color(1f, 0.55f, 0.55f);
+            _deltaShownFor = DeltaSeconds;
+        }
+
+        private void UpdateDelta()
+        {
+            if (_deltaText == null)
+            {
+                return;
+            }
+
+            _deltaShownFor = Mathf.Max(0f, _deltaShownFor - Time.unscaledDeltaTime);
+            Color color = _deltaText.color;
+            color.a = Mathf.Clamp01(_deltaShownFor / 0.6f);
+            _deltaText.color = color;
         }
 
         private void RefreshFollowers()

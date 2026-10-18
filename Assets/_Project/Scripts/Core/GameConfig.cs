@@ -59,7 +59,7 @@ namespace DecirQueNo
         public int yesHealth = -12;
 
         [Header("Effects: Maybe")]
-        public int maybeFollowers = 3750;
+        public int maybeFollowers = 0;
         public int maybeHealth = -6;
 
         [Header("Effects: No")]

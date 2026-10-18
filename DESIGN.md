@@ -26,6 +26,8 @@ Sos una influencer estancada. Una influencer más importante te propone cosas du
 7. Pantalla de dormir: resumen del día + espejo que refleja la salud.
 8. Siguiente día, hasta el día 3. Al final: ending y estadísticas.
 
+**Meta alcanzada:** al llegar a 100.000 seguidores la partida termina en ese momento (si hay una conversación abierta, se termina de responder primero) y va directo a dormir/final.
+
 ## Estructura
 - **3 días**, ~2,5 minutos cada uno, 4–5 mensajes por día.
 - Los mensajes de la partida salen de un pool y se **mezclan en cada partida** (ver "Rejugabilidad").
@@ -33,7 +35,7 @@ Sos una influencer estancada. Una influencer más importante te propone cosas du
 - Salud inicial: **45** (la influencer ya viene desgastada). Mínimo 0, máximo 100. No baja de 0 y se juegan siempre los 3 días.
 
 ## Mensajes y respuestas
-Cada mensaje es una **orden** del NPC con número de misión: "Hacé misión_3" (placeholder). El "Hace N" queda como etiqueta de cuánto hace que llegó.
+Cada mensaje es una **orden** del NPC con número de misión: "Hacé misión_3" (placeholder). La etiqueta "Hace N min" se calcula con el reloj del celu (de a 10 minutos) y avanza mientras la notificación espera; "Ahora" si recién llegó.
 
 Cada mensaje define tres tipos de respuesta:
 | Tipo | Largo | Ejemplo placeholder |
@@ -58,11 +60,11 @@ Los números exactos están en BALANCE.md.
 
 ## Timer
 - Depende de la salud: más salud, más tiempo. Rango de **45 a 60 s** (fórmula en BALANCE.md). La presión no viene de armar rápido sino del reloj del día: mientras pensás, las otras notificaciones siguen venciendo.
-- Arranca al abrir la conversación. Si llega a 0 se envía "Sí" por default.
+- Arranca al abrir la conversación. La barra se vacía de derecha a izquierda además de cambiar de color. Si llega a 0 se envía "Sí" por default.
 
 ## Que sea mental, no de velocidad
 Después del primer playtest (el "No" de 12 palabras en ~12 s era inalcanzable) se ajustó para que decidir pese más que hacer clicks rápido:
-- **Leyenda de esfuerzo:** al abrir un mensaje se ve cuántas palabras pide cada respuesta ("Si: 1   Tal vez: 3   No: 6"). La decisión es cuánto esfuerzo vale cada una.
+- **Leyenda de esfuerzo:** al abrir un mensaje se ve cuántas palabras pide cada respuesta ("Palabras que hay que armar para responder: Si: 1 palabra / Tal vez: 3 palabras / No: 6 palabras"). La decisión es cuánto esfuerzo vale cada una.
 - **Práctica:** el primer mensaje que abrís en la partida siempre tiene el "No" más corto (2 palabras) y lo avisa, para descubrirlo y lograrlo una vez.
 - **Aviso de nivel:** cuando la salud sube o baja y cambia el nivel del "No", aparece "Decir que no te cuesta menos / más" al costado de la pantalla.
 - **Bonus por racha:** cada "No" seguido después del primero da +2 de salud extra (hasta +8). Un "Sí" o "Tal vez" corta la racha; una expiración no.
@@ -79,12 +81,13 @@ Después del primer playtest (el "No" de 12 palabras en ~12 s era inalcanzable) 
 | Respuesta | Seguidores | Salud |
 |---|---|---|
 | Sí | ++ | -- |
-| Tal vez | mitad del Sí | mitad del Sí |
+| Tal vez | 0 (evadir no hace crecer) | mitad del Sí |
 | No | - (leve) | ++ |
 | Notificación que expira | - (más que un No) | + (poco) |
 
 ## Notificaciones que expiran
 - Cada notificación vive **30 s** (tuneable) mientras no se abre. Se muestra una barrita que se acorta.
+- Cada cambio del contador de seguidores muestra debajo del número cuánto cambió y por qué ("-1.500 (Nombre_1 sin abrir)"), porque puede cambiar con otra conversación abierta.
 - Si expira, desaparece y cuenta como una **mezcla de "No"**: resta **más seguidores** que un "No", suma **poca salud** y **dispara la insistencia**. No cuenta como un "No" dicho para el final.
 - Es la forma de evitar una situación sin esfuerzo, pero sale cara: no es un atajo al final feliz.
 - Los mensajes de insistencia que expiran no generan una insistencia nueva.

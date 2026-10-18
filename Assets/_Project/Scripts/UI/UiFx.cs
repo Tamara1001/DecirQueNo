@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DecirQueNo
 {
@@ -66,6 +67,36 @@ namespace DecirQueNo
                 target.localScale = new Vector3(1f - 0.15f * k, 1f - 0.15f * k, 1f);
                 yield return null;
             }
+        }
+
+        private static Sprite _whiteSprite;
+
+        // Turns a plain Image into a bar that empties from right to left. A filled Image needs a sprite,
+        // so the default square gets a runtime white one.
+        public static void MakeHorizontalFill(Image image)
+        {
+            if (image == null)
+            {
+                return;
+            }
+
+            if (image.sprite == null)
+            {
+                if (_whiteSprite == null)
+                {
+                    var texture = new Texture2D(1, 1);
+                    texture.SetPixel(0, 0, Color.white);
+                    texture.Apply();
+                    _whiteSprite = Sprite.Create(texture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f));
+                }
+
+                image.sprite = _whiteSprite;
+            }
+
+            image.type = Image.Type.Filled;
+            image.fillMethod = Image.FillMethod.Horizontal;
+            image.fillOrigin = (int)Image.OriginHorizontal.Left;
+            image.fillAmount = 1f;
         }
 
         private static float EaseOutBack(float k)

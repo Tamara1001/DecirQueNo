@@ -19,6 +19,9 @@ namespace DecirQueNo
         public float LastResponseSeconds { get; private set; }
         public ResponseTimer Timer => _timer;
 
+        // How long the message waited before being opened, for the "Hace x" label.
+        public float OpenedAgeSeconds { get; set; }
+
         public event Action<ConversationController> OnOpened;
         public event Action<MessageData, PhraseType, bool> OnResponded;
         public event Action OnCanSendChanged;

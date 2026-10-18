@@ -40,18 +40,20 @@ Fecha: 2026-10-17. "No" difícil + notificaciones que expiran + pool mezclado po
 
 | Bot | Final | Seguidores | Salud | Sí / Tal vez / No / Expiradas |
 |---|---|---|---|---|
-| Influencer | Triste | 115.000 / 100.000 | 0 | 14 / 0 / 0 / 0 |
+| Influencer | Triste | 100.000 / 100.000 (corta en el día 3) | 0 | 12 / 0 / 0 / 0 |
 | MentalHealth | Feliz | 0 / 100.000 | 100 | 0 / 0 / 28 / 0 |
-| Balanced | Neutro | 84.250 / 100.000 | 45 | 9 / 0 / 14 / 0 |
+| Balanced | Neutro | 81.000 / 100.000 | 53 | 9 / 0 / 13 / 0 |
 | Ignorer | Neutro | 0 / 100.000 | 100 | 0 / 0 / 0 / 28 |
 | Average | Feliz | 0 / 100.000 | 100 | 0 / 0 / 28 / 0 |
+
+Actualizado tras el segundo playtest (2026-10-18): "Tal vez" ya no suma seguidores y la partida corta al llegar a la meta; el Influencer termina con 12 "Sí" en vez de 14 porque la run se corta al llegar a 100.000. 5 de 5 en verde.
 
 Actualizado tras el primer playtest ("No" de 2 a 8 palabras, timer de 45 a 60 s, práctica, racha de "No"). 5 de 5 tests en verde. Resultados del Balanced: Neutro, 81.000 seguidores, salud 53.
 
 **Hallazgo nuevo:** con el "No" más fácil, decir siempre "No" lleva a salud 100 en el día 1 (los 8 primeros "No" dan +55) y deja los seguidores en 0. Es el camino más seguro y barato; si se quiere más tensión hay que subir el costo en seguidores del "No" o hacer que el "No" siga siendo parte de la partida con más esfuerzo.
 
 ## Hallazgos de balance
-1. **El Influencer cumple el diseño:** llega a 115.000 con la salud al piso y final triste. La meta ahora es alcanzable.
+1. **El Influencer cumple el diseño:** llega a 100.000 (la partida corta ahí, con 12 "Sí") con la salud al piso y final triste. La meta ahora es alcanzable.
 2. **El "No" es trivial para un bot perfecto.** El MentalHealth arma frases de 12 palabras en ~6 s sin fallar nunca y termina con salud 100. Esto no dice nada sobre una persona: falta el bot **Average** (clicks más lentos, errores) para ver si el nivel 4 es "casi imposible" para una jugadora promedio.
 3. **Ganar sin seguidores:** el MentalHealth termina feliz con 0 seguidores (el "No" resta -500 y la insistencia -750). Por diseño los seguidores no deciden el final; hay que decidir si eso es lo que queremos.
 4. **La insistencia duplica la partida:** cada "No" suma un mensaje extra, así que el MentalHealth respondió 28 mensajes y el Balanced 23, contra los 14 del guion.

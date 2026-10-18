@@ -19,6 +19,7 @@ namespace DecirQueNo
 
         private Notification _notification;
         private bool _expiring;
+        private bool _insistent;
 
         public MessageData Message => _notification?.Message;
 
@@ -38,7 +39,9 @@ namespace DecirQueNo
 
             // Insistence messages are marked in red so they stand out.
             bool insistent = message.pressure > 0;
-            _label.text = insistent ? $"!  {message.sender}  ({message.timeAgo})" : $"{message.sender}  ({message.timeAgo})";
+            _insistent = insistent;
+            UiFx.MakeHorizontalFill(_lifeFill);
+            RefreshLabel();
             var background = GetComponent<Image>();
             if (insistent && background != null)
             {
@@ -78,6 +81,27 @@ namespace DecirQueNo
         private void Update()
         {
             UpdateLife();
+            RefreshLabel();
+        }
+
+        // The "Hace x" part follows the phone's clock, so waiting is visible.
+        private void RefreshLabel()
+        {
+            if (_notification == null || _expiring)
+            {
+                return;
+            }
+
+            DayData day = GameManager.Instance != null ? GameManager.Instance.CurrentDayData : null;
+            float dayLength = day != null ? day.dayLength : 150f;
+            string ago = TimeAgo.Format(_notification.Lifetime - _notification.Remaining, dayLength);
+            string text = _insistent
+                ? $"!  {_notification.Message.sender}  ({ago})"
+                : $"{_notification.Message.sender}  ({ago})";
+            if (text != _label.text)
+            {
+                _label.text = text;
+            }
         }
 
         private void UpdateLife()

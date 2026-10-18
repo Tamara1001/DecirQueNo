@@ -57,6 +57,9 @@ namespace DecirQueNo
             _conversation.OnCanSendChanged += Refresh;
             _conversation.Timer.OnTick += HandleTick;
             _sendButton.onClick.AddListener(_conversation.Send);
+
+            // The bar must shrink as time runs out, not only change color.
+            UiFx.MakeHorizontalFill(_timerFill);
             _root.SetActive(false);
         }
 
@@ -116,7 +119,7 @@ namespace DecirQueNo
 
         private IEnumerator ShowMessage(MessageData message, BankBuilder.Bank bank)
         {
-            string header = $"{message.sender} ({message.timeAgo})\n";
+            string header = $"{message.sender} ({TimeAgo.Format(_conversation.OpenedAgeSeconds, GameManager.Instance.CurrentDayData.dayLength)})\n";
             _historyText.text = header + "...";
             yield return new WaitForSeconds(TypingSeconds);
             _historyText.text = header + message.body + "\n\n" + BuildLegend(bank);
@@ -126,14 +129,14 @@ namespace DecirQueNo
         // How many words each answer takes, so the player can weigh the effort before building anything.
         private static string BuildLegend(BankBuilder.Bank bank)
         {
-            string legend = "";
+            string legend = "Palabras que hay que armar para responder:";
             foreach (PhraseOption option in bank.Options)
             {
                 string name = option.Type == PhraseType.Yes ? "Si" : option.Type == PhraseType.Maybe ? "Tal vez" : "No";
-                legend += $"{name}: {option.Words.Count}   ";
+                int count = option.Words.Count;
+                legend += $"\n  {name}: {count} {(count == 1 ? "palabra" : "palabras")}";
             }
 
-            legend = legend.TrimEnd();
             return bank.IsTutorial ? legend + "\n(Practica: aca el No es corto)" : legend;
         }
 

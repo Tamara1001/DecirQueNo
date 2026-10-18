@@ -18,7 +18,7 @@ Todos estos valores viven en `GameConfig` (ScriptableObject) y no se hardcodean.
 | Respuesta | Seguidores | Salud |
 |---|---|---|
 | Sí | +7.500 | -12 |
-| Tal vez | +3.750 | -6 |
+| Tal vez | 0 | -6 |
 | No | -500 | +8 |
 | Notificación que expira | -1.500 | +2 |
 
@@ -50,7 +50,8 @@ Los mensajes de insistencia multiplican los efectos por ×1.5.
 Una notificación expirada **no** cuenta como "No" dicho.
 
 ## Chequeo de sanidad (a verificar con bots)
-- Todo "Sí": 14 × 7.500 + 10.000 = 115.000 seguidores y salud al piso (0). Final triste con la meta lograda.
+- Todo "Sí": la meta (100.000) se alcanza con el "Sí" número 12 y la partida **termina en ese momento**. Salud al piso (0), final triste.
+- "Tal vez" no da seguidores: evadir cuesta salud y no hace crecer.
 - Todo "No" posible: cada "No" real sube 8 de salud, así que de 45 a ≥ 65 hacen falta 3 aciertos; los 5 "No" para el final feliz entran bien en 14 mensajes.
 - El primer "No" de la partida es una práctica con el largo del nivel 1 (2 palabras). Después el nivel depende de la salud (nivel 4 al arrancar: 8 palabras en ~52 s).
 

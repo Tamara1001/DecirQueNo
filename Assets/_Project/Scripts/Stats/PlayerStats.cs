@@ -13,6 +13,9 @@ namespace DecirQueNo
         public int Followers { get; private set; }
         public int Health { get; private set; }
 
+        // Why the followers last changed, so the HUD can explain it.
+        public string LastFollowersReason { get; private set; }
+
         public int YesCount { get; private set; }
         public int MaybeCount { get; private set; }
         public int NoCount { get; private set; }
@@ -71,20 +74,23 @@ namespace DecirQueNo
             _responses++;
             _totalResponseSeconds += responseSeconds;
 
-            AddFollowers(_config.GetFollowers(type, multiplier));
+            string answer = type == PhraseType.Yes ? "Si" : type == PhraseType.Maybe ? "Tal vez" : "No";
+            AddFollowers(_config.GetFollowers(type, multiplier), timedOut ? "Se acabo el tiempo (Si)" : $"Dijiste {answer}");
             AddHealth(_config.GetHealth(type, multiplier) + streakBonus);
         }
 
         // A notification expired without being opened. It is not a No the player said.
-        public void ApplyExpired(float multiplier = 1f)
+        public void ApplyExpired(float multiplier = 1f, string sender = null)
         {
             ExpiredCount++;
-            AddFollowers(Mathf.RoundToInt(_config.expireFollowers * multiplier));
+            AddFollowers(Mathf.RoundToInt(_config.expireFollowers * multiplier),
+                string.IsNullOrEmpty(sender) ? "Mensaje sin abrir" : $"{sender} sin abrir");
             AddHealth(Mathf.RoundToInt(_config.expireHealth * multiplier));
         }
 
-        public void AddFollowers(int amount)
+        public void AddFollowers(int amount, string reason = null)
         {
+            LastFollowersReason = reason;
             Followers = Mathf.Max(0, Followers + amount);
             OnFollowersChanged?.Invoke(Followers);
         }

@@ -55,7 +55,7 @@ MonoBehaviour:
   sadHealthBelow: 30
   yesFollowers: 7500
   yesHealth: -12
-  maybeFollowers: 3750
+  maybeFollowers: 0
   maybeHealth: -6
   noFollowers: -500
   noHealth: 8

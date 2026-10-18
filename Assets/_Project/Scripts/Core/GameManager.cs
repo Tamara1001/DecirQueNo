@@ -180,9 +180,10 @@ namespace DecirQueNo
             }
         }
 
-        public void EndDay()
+        // Reaching the follower goal ends the run on the spot, whatever the day.
+        public void EndDay(bool goalReached = false)
         {
-            if (IsLastDay)
+            if (IsLastDay || goalReached)
             {
                 Ending = EvaluateEnding();
             }

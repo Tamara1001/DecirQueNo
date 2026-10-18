@@ -98,6 +98,13 @@ namespace DecirQueNo
             UpdateClock();
 
             // A conversation already open is never cut off by the clock: the response timer bounds it.
+            // Reaching the goal ends the run right away; an open chat is allowed to finish first.
+            if (_stats.Followers >= _manager.Config.goalFollowers && !_conversation.IsOpen)
+            {
+                EndDay(true);
+                return;
+            }
+
             bool timeIsUp = _elapsed >= _day.dayLength && !_conversation.IsOpen;
             bool allDone = _scheduled.Count == 0 && Notifications.Count == 0 && !_conversation.IsOpen;
             if (timeIsUp || allDone)
@@ -118,6 +125,7 @@ namespace DecirQueNo
             // The very first conversation of the run is practice: the No is as short as it gets.
             int forcedLevel = _manager.PracticeDone ? -1 : 0;
             _manager.PracticeDone = true;
+            _conversation.OpenedAgeSeconds = notification.Lifetime - notification.Remaining;
             _conversation.Open(message, _manager.Config.GetResponseSeconds(_stats.Health), _stats, _manager.Config, _manager.RunSeed, forcedLevel);
         }
 
@@ -158,7 +166,7 @@ namespace DecirQueNo
         // and brings the insistence, but it is not a No the player said.
         private void Expire(MessageData message)
         {
-            _stats.ApplyExpired(message.effectMultiplier);
+            _stats.ApplyExpired(message.effectMultiplier, message.sender);
             _summary.Expired++;
             QueueInsistence(message);
         }
@@ -198,20 +206,23 @@ namespace DecirQueNo
             OnClockChanged?.Invoke(_day.dayNumber, text);
         }
 
-        private void EndDay()
+        private void EndDay(bool goalReached = false)
         {
             _ended = true;
 
-            // Notifications still waiting when the day ends expire.
+            // Notifications still waiting when the day ends expire. If the goal was reached they just vanish.
             foreach (Notification notification in Notifications.TakeAll())
             {
-                Expire(notification.Message);
+                if (!goalReached)
+                {
+                    Expire(notification.Message);
+                }
             }
 
             _summary.FollowersDelta = _stats.Followers - _startFollowers;
             _summary.HealthDelta = _stats.Health - _startHealth;
             _manager.LastSummary = _summary;
-            _manager.EndDay();
+            _manager.EndDay(goalReached);
         }
     }
 }
