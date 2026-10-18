@@ -13,38 +13,27 @@ MonoBehaviour:
   m_Name: Msg_1_3
   m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
   sender: Valerie
-  body: "Estuvo brutal el morbo del live, rompimos record.\nYa cumpl\xED contigo,
-    ahora le paso tu contacto a Christian Vega, mi manager\nEscr\xEDbele de una vez
-    o perder\xE1s el momento"
+  body: "Estuvo brutal el morbo del live, rompimos r\xE9cord.\nYa cumpl\xED contigo,
+    ahora le paso tu contacto a Christian Vega, mi manager.\nEscr\xEDbele de una
+    vez o perder\xE1s el momento."
   level: 1
   isFinal: 0
   yesWords:
-  - "\xA1No inventes! \U0001F631"
-  - "\xA1much\xEDsimas gracias,"
-  - ya mismo
-  - le hablo,
-  - "\xA1mil gracias!"
+  - Le
+  - escribo
+  - ahora.
+  maybeWords:
+  - Lo busco
+  - en un
+  - rato.
   evasiveWords:
-  - "Qued\xE9 agotad\xEDsima,"
-  - "\xBFpuedo hablarle"
-  - "ma\xF1ana con"
-  - un poco
-  - "m\xE1s calma?"
+  - No le
+  - voy a
+  - escribir
+  - a nadie.
   noWords: []
-  yesReply: "De nada hermosa, te lo ganaste\nCobra caro pero hace milagros, no me
-    hagas quedar mal ni lo dejes esperando \U0001F460\u2728"
-  evasiveReply: "\xBFDescansar? Ay linda, qu\xE9 ingenua eres\nLa gente importante
-    no espera tu siesta.\nEscr\xEDbele ahorita o busca otro manager por tu cuenta
-    \U0001F971"
+  yesReply: "De nada, hermosa, te lo ganaste.\nCobra caro pero hace milagros, no
+    me hagas quedar mal ni lo dejes esperando \U0001F460\u2728"
+  maybeReply: "Escr\xEDbele ahorita o busca otro manager por tu cuenta \U0001F971"
+  evasiveReply: "Escr\xEDbele ahorita o busca otro manager por tu cuenta \U0001F971"
   noReply: 
-  sourceBank:
-  - "\xA1No inventes! \U0001F631"
-  - "\xA1much\xEDsimas gracias,"
-  - ya mismo
-  - le hablo,
-  - "\xA1mil gracias!"
-  - "Qued\xE9 agotad\xEDsima,"
-  - "\xBFpuedo hablarle"
-  - "ma\xF1ana con"
-  - un poco
-  - "m\xE1s calma?"

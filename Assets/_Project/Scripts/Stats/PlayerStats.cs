@@ -14,6 +14,7 @@ namespace DecirQueNo
         public int Health { get; private set; }
 
         public int YesCount { get; private set; }
+        public int MaybeCount { get; private set; }
         public int EvasiveCount { get; private set; }
 
         // Real No answers (only the final message has one).
@@ -22,9 +23,6 @@ namespace DecirQueNo
         public int TimeoutCount { get; private set; }
 
         public float AverageResponseSeconds => _responses == 0 ? 0f : _totalResponseSeconds / _responses;
-
-        // Why the followers last changed, so the HUD can explain it.
-        public string LastFollowersReason { get; private set; }
 
         public event Action<int> OnFollowersChanged;
         public event Action<int> OnHealthChanged;
@@ -48,7 +46,8 @@ namespace DecirQueNo
             switch (type)
             {
                 case PhraseType.Yes: YesCount++; break;
-                case PhraseType.Maybe: EvasiveCount++; break;
+                case PhraseType.Maybe: MaybeCount++; break;
+                case PhraseType.Evasive: EvasiveCount++; break;
                 default: NoCount++; break;
             }
 
@@ -60,8 +59,7 @@ namespace DecirQueNo
             _responses++;
             _totalResponseSeconds += responseSeconds;
 
-            string answer = type == PhraseType.Yes ? "Si" : type == PhraseType.Maybe ? "Evasiva" : "No";
-            AddFollowers(_config.GetFollowers(type, message), timedOut ? "Se acabo el tiempo (Si)" : $"Dijiste {answer}");
+            AddFollowers(_config.GetFollowers(type, message));
             AddHealth(_config.GetHealth(type, message));
         }
 
@@ -69,12 +67,11 @@ namespace DecirQueNo
         public void ApplyExpired(MessageData message)
         {
             ExpiredCount++;
-            AddFollowers(_config.GetExpiredFollowers(message), $"{message.sender} sin abrir");
+            AddFollowers(_config.GetExpiredFollowers(message));
         }
 
-        public void AddFollowers(int amount, string reason = null)
+        public void AddFollowers(int amount)
         {
-            LastFollowersReason = reason;
             Followers = Mathf.Max(0, Followers + amount);
             OnFollowersChanged?.Invoke(Followers);
         }

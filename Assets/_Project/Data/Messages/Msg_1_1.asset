@@ -13,39 +13,32 @@ MonoBehaviour:
   m_Name: Msg_1_1
   m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
   sender: Valerie
-  body: "Obvio me ubicas, as\xED que ire directo al punto. Vi tu video en mi FYP
-    y tu perfil es lo que he estado buscando \xBFEst\xE1s lista para crecer en serio?
-    Con el hype que traigo f\xE1cil llegas al 1 millon de seguidores... \xBFTienes
+  body: "Obvio me ubicas, as\xED que ir\xE9 directo al punto.\nVi tu video en mi
+    FYP y tu perfil es lo que he estado buscando.\n\xBFEst\xE1s lista para crecer
+    en serio? Con el hype que traigo f\xE1cil llegas al 1 mill\xF3n de seguidores...\n\xBFTienes
     lo necesario para seguirme el paso o te me vas a quedar en el camino? \U0001F485\u2728"
   level: 1
   isFinal: 0
   yesWords:
-  - "\xA1Obvio s\xED! \U0001F496"
-  - "\xA1no inventes,"
-  - "estoy list\xEDsima,"
-  - te sigo
-  - "el paso! \u2728"
+  - "\xA1Obvio"
+  - "s\xED,"
+  - "list\xEDsima!"
+  maybeWords:
+  - Lo
+  - voy a
+  - pensar...
   evasiveWords:
-  - "Suena incre\xEDble,"
+  - Suena bien,
   - pero prefiero
   - ir paso
-  - a pasito,
-  - "\xBFte parece? \U0001F97A\u2728"
+  - a pasito.
   noWords: []
-  yesReply: "\xBFAs\xED me gusta, con ganas y actitud! Te paso las instrucciones
-    por privado en dos minutos. Arr\xE9glate hermosa y no me vayas a dejar en rid\xEDculo."
-  evasiveReply: "Ay coraz\xF3n, qu\xE9 flojera me da las personas inseguras. Conmigo
-    vas al cien o le paso esta opotunidad a otra persona. Te paso las pautas, no
+  yesReply: "\xA1As\xED me gusta, con ganas y actitud!\nTe paso las instrucciones
+    por privado en dos minutos.\nArr\xE9glate hermosa y no me vayas a dejar en rid\xEDculo."
+  maybeReply: "Ay coraz\xF3n, qu\xE9 flojera me dan las personas inseguras.\nConmigo
+    vas al cien o le paso esta oportunidad a otra persona.\nTe paso las pautas, no
+    me hagas perder el tiempo."
+  evasiveReply: "Ay coraz\xF3n, qu\xE9 flojera me dan las personas inseguras.\nConmigo
+    vas al cien o le paso esta oportunidad a otra persona.\nTe paso las pautas, no
     me hagas perder el tiempo."
   noReply: 
-  sourceBank:
-  - "\xA1Obvio s\xED! \U0001F496"
-  - "\xA1no inventes,"
-  - "estoy list\xEDsima,"
-  - te sigo
-  - "el paso! \u2728"
-  - "Suena incre\xEDble,"
-  - pero prefiero
-  - ir paso
-  - a pasito,
-  - "\xBFte parece? \U0001F97A\u2728"

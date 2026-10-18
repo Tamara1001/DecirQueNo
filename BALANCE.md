@@ -1,43 +1,33 @@
 # BALANCE — valores tuneables
 
-Todos estos valores viven en `GameConfig` (ScriptableObject) y se generan desde `ScriptAssetsBuilder` (menú **DecirQueNo > Build > Generate script assets**). Son un **punto de partida** acordado con el equipo; todavía no se balancearon con bots ni a mano. Última revisión: 2026-10-18.
+Viven en `GameConfig` y se generan desde `ScriptAssetsBuilder` (menú **DecirQueNo > Build > Generate script assets**). Punto de partida, sin balancear a fondo. Última revisión: 2026-10-18.
 
 ## Globales
-| Variable | Valor inicial |
-|---|---|
-| Seguidores iniciales | 320 |
-| Meta de seguidores | 1.000.000 |
-| Cordura inicial | 70 (rango 0 a 100) |
-| Días | 3, de 3 mensajes (9 en total, en orden fijo) |
-| Vida de una notificación | 30 s |
-| Pausa entre mensajes | 3 s al empezar el día, 5 s después |
+Seguidores iniciales 320 · meta 1.000.000 · cordura inicial 70 (0–100, oculta) · 3 días de 3 mensajes · notificación vive 30 s · tiempo para responder 40 s (igual para todos).
 
-## Efectos por nivel del antagonista
-| Nivel | ✅ Sí: seguidores | ✅ Sí: cordura | 🚨 Evasiva: seguidores | 🚨 Evasiva: cordura |
-|---|---|---|---|---|
-| 1 (Valerie) | +30.000 | -15 | -3.000 | 0 |
-| 2 (Christian) | +100.000 | -20 | -10.000 | +5 ("No tibio") |
-| 3 (VIP) | +230.000 | -25 | -23.000 | +5 ("No tibio") |
+## Efectos por nivel
+| Nivel | Sí: seguidores / cordura | Tal vez: seguidores / cordura | Evasiva: seguidores / cordura |
+|---|---|---|---|
+| 1 (Valerie) | +120.000 / -15 | +60.000 / -7 | -3.000 / 0 |
+| 2 (Christian) | +140.000 / -20 | +70.000 / -10 | -5.000 / +5 |
+| 3 (VIP) | +155.000 / -25 | +77.500 / -12 | -10.000 / +5 |
 
-- **No absoluto** (solo mensaje final): -100.000 seguidores, +30 cordura. Cierra la partida.
-- **Notificación que vence:** seguidores de la evasiva × 1,5, cordura sin cambio.
-- **Se acaba el tiempo:** se envía el Sí.
+- **Tal vez** = la mitad del Sí (como en la mecánica original).
+- **No final:** -100.000 seguidores, +30 cordura, cierra la partida.
+- **Notificación que vence:** seguidores de la evasiva × 1,5. **Se acaba el tiempo:** se envía el Sí.
 
-## Dificultad por cordura
-| Cordura | Escala de botones |
-|---|---|
-| ≥ 70 | 1,00 |
-| 40–69 | 0,80 |
-| < 40 | 0,60 |
+## Meta del millón
+Con ~70 % de Sí (6–7 de 9) y el resto Tal vez (como mucho una evasiva) se llega al millón; con 5 Sí no, y con todo Tal vez se queda en ~620.000.
 
-Timer de respuesta: `segundos = 20 + 40 × (cordura / 100)`, entre 20 y 60 s.
+## Cuánto cuesta decir que no
+La cordura solo cambia el **tamaño y el orden de los bloques** (el tiempo no cambia):
+| Cordura | Bloques | Orden |
+|---|---|---|
+| ≥ 70 | 1,00 | Frases del No (evasiva y No) juntas y en orden |
+| 40–69 | 0,80 | Juntas pero desordenadas |
+| < 40 | 0,60 | Mezcladas con las demás |
 
-## Chequeo de sanidad
-- **Todo "Sí":** tras 8 mensajes hay ~850.000 seguidores; con el noveno se pasa 1.000.000 y la partida termina (final "No dije que no"). La cordura queda en 0.
-- **Todo evasiva y No final:** la cordura sube a ~95 (nivel 1 no suma, niveles 2 y 3 suman 5 cada uno) y se llega al No con el timer casi completo. Termina con pocos seguidores.
-- **Ignorar todo:** los 9 mensajes vencen; pierde seguidores y no llega al final "Decir que no".
+El Sí y el Tal vez siempre salen juntos y en orden.
 
-## Qué ajustar si...
-- Nadie logra armar el No final: subir `timerMinSeconds`, bajar la pérdida de cordura del Sí o subir la cordura inicial.
-- Decir "No" no cuesta nada (el final es gratis): subir lo que se pierde con la evasiva o bajar la cordura que suma.
-- Se llega a la meta antes del último mensaje: bajar las ganancias del Sí del nivel 3. La meta no debería alcanzarse antes del mensaje 3.3.
+## Finales
+Ver `GUION.md`: bueno (final No + máx. 3 Sí + al menos 5 de 9 con evasiva/No), malo (llegó al millón), intermedio (el resto).

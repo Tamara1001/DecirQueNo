@@ -13,44 +13,34 @@ MonoBehaviour:
   m_Name: Msg_2_2
   m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
   sender: Christian
-  body: 'Samantha, estuve revisando tus publicaciones.
-
-    Tus amigos te dejan comentarios
-    que arruinan tu feed y posteos.
-
-    Ya estas a otro nivel, no necesitas chimes
-    y ese tipo de interacciones, lo mejor es bloquearlos ya, antes de que nos generen
-    un problema.'
+  body: "Samantha, estuve revisando tus publicaciones.\nTus amigos te dejan comentarios
+    que arruinan tu feed y tus posteos.\nYa est\xE1s a otro nivel, no necesitas chismes
+    ni ese tipo de interacciones,\nlo mejor es bloquearlos ya, antes de que nos generen
+    un problema."
   level: 2
   isFinal: 0
   yesWords:
-  - "Est\xE1 bien,"
-  - los silencio
-  - por ahora,
-  - si es
-  - "necesario. \U0001F647\u200D\u2640\uFE0F"
+  - "S\xED,"
+  - los
+  - bloqueo.
+  maybeWords:
+  - Solo voy
+  - a
+  - silenciarlos.
   evasiveWords:
-  - Esto realmente
+  - Esto
+  - realmente
   - me incomoda,
-  - pero si
-  - usted insiste...
-  - "lo har\xE9. \U0001F97A"
+  - no quiero
+  - bloquearlos.
   noWords: []
   yesReply: "Esa es la madurez que te hace diferente al resto.\nS\xE9 que cuesta
     soltar el pasado, pero tu talento merece un p\xFAblico de verdad. Conf\xEDa en
     m\xED."
+  maybeReply: "Samantha, esa sensibilidad tuya es hermosa, pero en los negocios te
+    hace vulnerable.\nNo lo veas como algo cruel, te estoy protegiendo de la envidia,
+    ver\xE1s que tengo raz\xF3n."
   evasiveReply: "Samantha, esa sensibilidad tuya es hermosa, pero en los negocios
     te hace vulnerable.\nNo lo veas como algo cruel, te estoy protegiendo de la envidia,
     ver\xE1s que tengo raz\xF3n."
   noReply: 
-  sourceBank:
-  - "Est\xE1 bien,"
-  - los silencio
-  - por ahora,
-  - si es
-  - "necesario. \U0001F647\u200D\u2640\uFE0F"
-  - Esto realmente
-  - me incomoda,
-  - pero si
-  - usted insiste...
-  - "lo har\xE9. \U0001F97A"

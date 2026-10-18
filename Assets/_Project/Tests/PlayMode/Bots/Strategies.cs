@@ -59,32 +59,54 @@ namespace DecirQueNo.Tests.Bots
         }
     }
 
-    // Goal: grow at a steady pace without burning out. Yes when behind the follower pace, evasive when ahead,
-    // and the real No on the final message when there is enough sanity left to build it in time.
-    public class BalancedStrategy : IBotStrategy
+    // Answers a fixed plan, one entry per message of the script (the final message uses the last entry
+    // it can: a missing evasive answer falls back to the in-between one).
+    public abstract class PlanStrategy : IBotStrategy
     {
-        private const int SaneEnoughForNo = 40;
+        protected abstract PhraseType[] Plan { get; }
 
-        public string Name => "Balanced";
+        public abstract string Name { get; }
         public float ReactionSeconds => 2f;
         public float ClickSeconds => 0.6f;
 
         public PhraseType Choose(BotContext context)
         {
-            GameConfig config = context.Config;
             PlayerStats stats = context.Stats;
-
-            if (context.Message.isFinal)
-            {
-                float needed = ReactionSeconds + ClickSeconds * context.Message.noWords.Count;
-                bool fits = needed < config.GetResponseSeconds(stats.Health);
-                return stats.Health >= SaneEnoughForNo && fits ? PhraseType.No : PhraseType.Yes;
-            }
-
-            // Expected followers at the middle of the current day.
-            float progress = (context.Day - 0.5f) / config.days.Count;
-            float expected = config.startFollowers + (config.goalFollowers - config.startFollowers) * progress;
-            return stats.Followers < expected ? PhraseType.Yes : PhraseType.Maybe;
+            int answered = stats.YesCount + stats.MaybeCount + stats.EvasiveCount + stats.NoCount + stats.ExpiredCount;
+            return Plan[System.Math.Min(answered, Plan.Length - 1)];
         }
+    }
+
+    // Always the in-between answer: slow growth and a draining sanity. Ends in the middle ending.
+    public class HesitantStrategy : PlanStrategy
+    {
+        public override string Name => "Hesitant";
+        protected override PhraseType[] Plan { get; } = { PhraseType.Maybe };
+    }
+
+    // About 70% Yes and the rest in-between: reaches the goal and the bad ending.
+    public class GoalChaserStrategy : PlanStrategy
+    {
+        public override string Name => "GoalChaser";
+
+        protected override PhraseType[] Plan { get; } =
+        {
+            PhraseType.Yes, PhraseType.Yes, PhraseType.Maybe,
+            PhraseType.Yes, PhraseType.Yes, PhraseType.Maybe,
+            PhraseType.Yes, PhraseType.Yes, PhraseType.Maybe,
+        };
+    }
+
+    // Says Yes at the beginning like everybody, then mostly refuses (half evasive or more), and lands the final No.
+    public class BalancedStrategy : PlanStrategy
+    {
+        public override string Name => "Balanced";
+
+        protected override PhraseType[] Plan { get; } =
+        {
+            PhraseType.Yes, PhraseType.Yes, PhraseType.Maybe,
+            PhraseType.Evasive, PhraseType.Maybe, PhraseType.Evasive,
+            PhraseType.Evasive, PhraseType.Evasive, PhraseType.No,
+        };
     }
 }

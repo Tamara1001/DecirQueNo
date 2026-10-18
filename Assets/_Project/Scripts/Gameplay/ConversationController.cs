@@ -40,6 +40,9 @@ namespace DecirQueNo
         public event Action OnClosed;
         public event Action OnCanSendChanged;
 
+        // Raised when the player leaves the chat without answering.
+        public event Action OnAbandoned;
+
         private void Awake()
         {
             _timer.OnTimeout += HandleTimeout;
@@ -96,6 +99,19 @@ namespace DecirQueNo
 
             _replying = false;
             OnClosed?.Invoke();
+        }
+
+        // The player goes back to the list of chats without answering. Nothing is answered or paid.
+        public void Abandon()
+        {
+            if (!_open)
+            {
+                return;
+            }
+
+            _open = false;
+            _timer.StopTimer();
+            OnAbandoned?.Invoke();
         }
 
         // Used by tests and by the day controller when it needs to close the conversation.

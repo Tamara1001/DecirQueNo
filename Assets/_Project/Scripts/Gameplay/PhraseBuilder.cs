@@ -37,6 +37,38 @@ namespace DecirQueNo
             OnChanged?.Invoke();
         }
 
+        // Puts a bank word at a position of the phrase (used when the player drags it in).
+        public void Insert(int bankIndex, int phrasePosition)
+        {
+            if (bankIndex < 0 || bankIndex >= _bank.Count || IsPicked(bankIndex))
+            {
+                return;
+            }
+
+            _picked.Insert(Math.Clamp(phrasePosition, 0, _picked.Count), bankIndex);
+            OnChanged?.Invoke();
+        }
+
+        // Reorders a word of the phrase. toPosition is the position it ends up at.
+        public void Move(int fromPosition, int toPosition)
+        {
+            if (fromPosition < 0 || fromPosition >= _picked.Count)
+            {
+                return;
+            }
+
+            toPosition = Math.Clamp(toPosition, 0, _picked.Count - 1);
+            if (toPosition == fromPosition)
+            {
+                return;
+            }
+
+            int bankIndex = _picked[fromPosition];
+            _picked.RemoveAt(fromPosition);
+            _picked.Insert(toPosition, bankIndex);
+            OnChanged?.Invoke();
+        }
+
         public void RemoveAt(int phrasePosition)
         {
             if (phrasePosition < 0 || phrasePosition >= _picked.Count)

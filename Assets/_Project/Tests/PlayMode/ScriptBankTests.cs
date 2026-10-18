@@ -7,9 +7,7 @@ namespace DecirQueNo.Tests
     // Checks the script data (see GUION.md): every phrase can be built from the bank and the board matches the game.
     public class ScriptBankTests
     {
-        // Banks of the Miro board that do not match the phrases the game uses. The writers have to fix them.
-        // Remove the entry here once the board is fixed and GUION.md / ScriptAssetsBuilder are updated.
-        private static readonly HashSet<string> KnownBoardMismatches = new HashSet<string> { "Msg_2_1", "Msg_3_3" };
+        private static readonly PhraseType[] AllTypes = { PhraseType.Yes, PhraseType.Maybe, PhraseType.Evasive, PhraseType.No };
 
         private static IReadOnlyList<MessageData> LoadMessages()
         {
@@ -43,6 +41,8 @@ namespace DecirQueNo.Tests
                 Assert.IsNotEmpty(message.body, $"{message.name} has no incoming text.");
                 Assert.IsNotEmpty(message.yesWords, $"{message.name} has no Yes phrase.");
                 Assert.IsNotEmpty(message.yesReply, $"{message.name} has no reply to Yes.");
+                Assert.IsNotEmpty(message.maybeWords, $"{message.name} has no in-between phrase.");
+                Assert.IsNotEmpty(message.maybeReply, $"{message.name} has no reply to the in-between answer.");
                 Assert.That(message.level, Is.InRange(1, 3), message.name);
 
                 if (message.isFinal)
@@ -57,7 +57,7 @@ namespace DecirQueNo.Tests
                     Assert.IsEmpty(message.noWords, $"{message.name}: only the final message has a real No.");
                 }
 
-                foreach (PhraseType type in new[] { PhraseType.Yes, PhraseType.Maybe, PhraseType.No })
+                foreach (PhraseType type in AllTypes)
                 {
                     foreach (string word in message.GetWords(type))
                     {
@@ -98,7 +98,7 @@ namespace DecirQueNo.Tests
             foreach (MessageData message in LoadMessages())
             {
                 var all = new List<IReadOnlyList<string>>();
-                foreach (PhraseType type in new[] { PhraseType.Yes, PhraseType.Maybe, PhraseType.No })
+                foreach (PhraseType type in AllTypes)
                 {
                     if (message.GetWords(type).Count > 0)
                     {
@@ -126,35 +126,85 @@ namespace DecirQueNo.Tests
         }
 
         [Test]
-        public void Bank_MatchesTheMiroBoard()
+        public void HighSanity_KeepsTheRefusalsTogetherAndInOrder()
         {
+            var config = Resources.Load<GameConfig>("GameConfig");
             foreach (MessageData message in LoadMessages())
             {
-                var fromPhrases = new List<string>();
-                fromPhrases.AddRange(message.yesWords);
-                fromPhrases.AddRange(message.evasiveWords);
-                fromPhrases.AddRange(message.noWords);
-                fromPhrases.Sort();
-
-                var fromBoard = new List<string>(message.sourceBank);
-                fromBoard.Sort();
-
-                bool same = fromPhrases.Count == fromBoard.Count;
-                for (int i = 0; same && i < fromPhrases.Count; i++)
+                BankBuilder.Bank bank = BankBuilder.Build(message, config, config.maxHealth, 77);
+                Assert.AreEqual(BankArrangement.Ordered, bank.Level.arrangement);
+                foreach (PhraseOption option in bank.Options)
                 {
-                    same = fromPhrases[i] == fromBoard[i];
-                }
-
-                if (KnownBoardMismatches.Contains(message.name))
-                {
-                    Assert.IsFalse(same, $"{message.name} now matches the board: remove it from KnownBoardMismatches.");
-                    Debug.LogWarning($"[ScriptBankTests] {message.name}: the board bank cannot build the phrases (known, see GUION.md).");
-                }
-                else
-                {
-                    Assert.IsTrue(same, $"{message.name}: the bank of the game differs from the Miro board.");
+                    Assert.GreaterOrEqual(IndexOfSequence(bank.Words, option.Words), 0, $"{message.name}: the {option.Type} phrase is not together and in order.");
                 }
             }
+        }
+
+        [Test]
+        public void MediumSanity_ScramblesTheRefusalsInsideTheirOwnGroup()
+        {
+            var config = Resources.Load<GameConfig>("GameConfig");
+            foreach (MessageData message in LoadMessages())
+            {
+                BankBuilder.Bank bank = BankBuilder.Build(message, config, config.noLevels[1].minHealth, 77);
+                Assert.AreEqual(BankArrangement.Scrambled, bank.Level.arrangement);
+                foreach (PhraseOption option in bank.Options)
+                {
+                    bool refusal = option.Type == PhraseType.Evasive || option.Type == PhraseType.No;
+                    bool inOrder = IndexOfSequence(bank.Words, option.Words) >= 0;
+                    Assert.AreNotEqual(refusal, inOrder, $"{message.name}: the {option.Type} phrase has the wrong order for this tier.");
+                }
+            }
+        }
+
+        [Test]
+        public void LowSanity_MixesEverythingWithoutLosingBlocks()
+        {
+            var config = Resources.Load<GameConfig>("GameConfig");
+            bool someMixed = false;
+            foreach (MessageData message in LoadMessages())
+            {
+                BankBuilder.Bank bank = BankBuilder.Build(message, config, 0, 77);
+                Assert.AreEqual(BankArrangement.Mixed, bank.Level.arrangement);
+
+                int expected = 0;
+                foreach (PhraseOption option in bank.Options)
+                {
+                    expected += option.Words.Count;
+                    someMixed |= IndexOfSequence(bank.Words, option.Words) < 0;
+                }
+
+                Assert.AreEqual(expected, bank.Words.Count, message.name);
+            }
+
+            Assert.IsTrue(someMixed, "At the lowest sanity the blocks must come out mixed.");
+        }
+
+        [Test]
+        public void ResponseTime_DoesNotDependOnSanity()
+        {
+            var config = Resources.Load<GameConfig>("GameConfig");
+            Assert.Greater(config.responseSeconds, 0f);
+        }
+
+        // Index where the words appear one after the other in the bank, or -1.
+        private static int IndexOfSequence(IReadOnlyList<string> bank, IReadOnlyList<string> words)
+        {
+            for (int start = 0; start + words.Count <= bank.Count; start++)
+            {
+                bool match = true;
+                for (int i = 0; match && i < words.Count; i++)
+                {
+                    match = bank[start + i] == words[i];
+                }
+
+                if (match)
+                {
+                    return start;
+                }
+            }
+
+            return -1;
         }
 
         private static int FindFreeIndex(IReadOnlyList<string> bank, PhraseBuilder builder, string word)

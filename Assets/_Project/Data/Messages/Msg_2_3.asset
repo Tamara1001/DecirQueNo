@@ -19,33 +19,26 @@ MonoBehaviour:
   level: 2
   isFinal: 0
   yesWords:
-  - "Cumplir\xE9 con"
-  - la llamada,
-  - supongo que
-  - no queda
-  - "otra. \U0001F630"
+  - Me
+  - conecto
+  - ahora.
+  maybeWords:
+  - "\xBFPor qu\xE9"
+  - diste
+  - "mi direcci\xF3n?"
   evasiveWords:
-  - Me asusta
-  - demasiado esto...
-  - pero me
-  - "conectar\xE9 hoy. \U0001F91D"
-  - "est\xE1 bien,"
+  - No voy
+  - a hacer
+  - esa
+  - "transmisi\xF3n"
+  - privada.
   noWords: []
-  yesReply: "Sab\xEDa que ver\xEDas el panorama completo. Eres una profesional nata\nEste
-    cliente tiene el poder de ponerte en las grandes ligas. Te hablar\xE1 en breve,
-    s\xE9 impecable."
+  yesReply: "Sab\xEDa que ver\xEDas el panorama completo. Eres una profesional nata.\nEste
+    cliente nos va a hacer millonarios. Te hablar\xE1 en breve, s\xE9 impecable."
+  maybeReply: "\xBFDesconf\xEDas de m\xED despu\xE9s de todo lo que he invertido
+    para cuidarte?\nEres brillante, no dejes que el miedo te sabotee justo cuando
+    estamos por ganar. Entra al enlace ahora."
   evasiveReply: "\xBFDesconf\xEDas de m\xED despu\xE9s de todo lo que he invertido
     para cuidarte?\nEres brillante, no dejes que el miedo te sabotee justo cuando
     estamos por ganar. Entra al enlace ahora."
   noReply: 
-  sourceBank:
-  - "Cumplir\xE9 con"
-  - la llamada,
-  - supongo que
-  - no queda
-  - "otra. \U0001F630"
-  - Me asusta
-  - demasiado esto...
-  - pero me
-  - "conectar\xE9 hoy. \U0001F91D"
-  - "est\xE1 bien,"

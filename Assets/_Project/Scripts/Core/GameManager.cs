@@ -8,7 +8,14 @@ namespace DecirQueNo
     public enum Ending
     {
         None,
+
+        // Learned to say No: the final No, few Yes and mostly refusals.
         Happy,
+
+        // Gave in a little to everything and did not reach the goal. Close to the sad one.
+        Neutral,
+
+        // Reached the goal by saying Yes.
         Sad
     }
 
@@ -21,7 +28,9 @@ namespace DecirQueNo
         public const string EndingScene = "Ending";
 
         private const string ConfigResourcePath = "GameConfig";
-        private const float FadeSeconds = 0.35f;
+        // The screen goes to black, holds a moment, and fades back in: between scenes and between days.
+        private const float FadeSeconds = 0.6f;
+        private const float BlackHoldSeconds = 0.25f;
 
         private ScreenFader _fader;
         private bool _loading;
@@ -99,6 +108,7 @@ namespace DecirQueNo
         {
             _loading = true;
             yield return _fader.FadeTo(1f, FadeSeconds);
+            yield return new WaitForSecondsRealtime(BlackHoldSeconds);
             SceneManager.LoadScene(sceneName);
             _loading = false;
         }
@@ -181,8 +191,15 @@ namespace DecirQueNo
 
         private Ending EvaluateEnding()
         {
-            // Only the real No of the final message leads to the happy ending.
-            return Stats.NoCount > 0 ? Ending.Happy : Ending.Sad;
+            if (Stats.Followers >= Config.goalFollowers)
+            {
+                return Ending.Sad;
+            }
+
+            int refusals = Stats.EvasiveCount + Stats.NoCount;
+            int neededRefusals = Mathf.CeilToInt(Config.TotalMessages * Config.goodMinNegativeShare);
+            bool good = Stats.NoCount > 0 && Stats.YesCount <= Config.goodMaxYes && refusals >= neededRefusals;
+            return good ? Ending.Happy : Ending.Neutral;
         }
 
         public void ContinueAfterSleep()

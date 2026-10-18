@@ -12,6 +12,9 @@ namespace DecirQueNo
         private const float FirstMessageDelay = 3f;
         private const float MessageGap = 5f;
 
+        // How fast the clock catches up with the story (a fraction of the day per second).
+        private const float ClockCatchUp = 0.09f;
+
         [SerializeField] private ConversationController _conversation;
 
         private readonly DaySummary _summary = new DaySummary();
@@ -27,6 +30,10 @@ namespace DecirQueNo
         private int _startHealth;
         private string _clockText;
         private bool _ended;
+        private int _resolved;
+        private float _shownProgress;
+        private Notification _openNotification;
+        private float _openedAt;
 
         public NotificationSystem Notifications { get; } = new NotificationSystem();
         public int DayNumber => _day != null ? _day.dayNumber : 0;
@@ -54,6 +61,7 @@ namespace DecirQueNo
             _messages = _manager.GetDayMessages(_day.dayNumber);
             _nextArrivalIn = FirstMessageDelay;
             _conversation.OnResponded += HandleResponded;
+            _conversation.OnAbandoned += HandleAbandoned;
             UpdateClock();
         }
 
@@ -62,6 +70,7 @@ namespace DecirQueNo
             if (_conversation != null)
             {
                 _conversation.OnResponded -= HandleResponded;
+                _conversation.OnAbandoned -= HandleAbandoned;
             }
         }
 
@@ -108,9 +117,33 @@ namespace DecirQueNo
             }
 
             MessageData message = notification.Message;
+            _openNotification = notification;
+            _openedAt = Time.time;
             Notifications.Remove(notification);
             _conversation.OpenedAgeSeconds = notification.Lifetime - notification.Remaining;
-            _conversation.Open(message, _manager.Config.GetResponseSeconds(_stats.Health), _stats, _manager.Config, _manager.RunSeed);
+            _conversation.Open(message, _manager.Config.responseSeconds, _stats, _manager.Config, _manager.RunSeed);
+        }
+
+        // The player left the chat without answering: the notification goes back to the list, and the time
+        // spent inside counts against its life, so going back and forth is not a way to stall.
+        private void HandleAbandoned()
+        {
+            if (_openNotification == null)
+            {
+                return;
+            }
+
+            Notification notification = _openNotification;
+            _openNotification = null;
+            notification.Remaining -= Time.time - _openedAt;
+            if (notification.Remaining <= 0f)
+            {
+                Expire(notification.Message);
+            }
+            else
+            {
+                Notifications.Restore(notification);
+            }
         }
 
         // The next message arrives only after the previous one was answered or expired, so the story keeps its order.
@@ -134,11 +167,13 @@ namespace DecirQueNo
 
         private void HandleResponded(MessageData message, PhraseType type, bool timedOut)
         {
+            _resolved++;
             _stats.Apply(type, message, _conversation.LastResponseSeconds, timedOut);
             switch (type)
             {
                 case PhraseType.Yes: _summary.Yes++; break;
                 case PhraseType.Maybe: _summary.Maybe++; break;
+                case PhraseType.Evasive: _summary.Evasive++; break;
                 default: _summary.No++; break;
             }
 
@@ -151,13 +186,20 @@ namespace DecirQueNo
         // A notification that expired without being opened: it counts as an evasive answer with a surcharge.
         private void Expire(MessageData message)
         {
+            _resolved++;
             _stats.ApplyExpired(message);
             _summary.Expired++;
         }
 
         private void UpdateClock()
         {
-            float t = Mathf.Clamp01(_elapsed / _day.dayLength);
+            // The day moves with the story as well as with the real time: every answered message brings the evening
+            // closer, so the player gets to see the afternoon and the night. The clock catches up smoothly.
+            float timeProgress = Mathf.Clamp01(_elapsed / _day.dayLength);
+            float total = Mathf.Max(1f, _messages.Count);
+            float messageProgress = Mathf.Clamp01((_resolved + (_conversation.IsBusy ? 0.5f : 0f)) / total);
+            _shownProgress = Mathf.MoveTowards(_shownProgress, Mathf.Max(timeProgress, messageProgress), ClockCatchUp * Time.deltaTime);
+            float t = _shownProgress;
             int totalMinutes = Mathf.RoundToInt(StartHour * 60 + t * (EndHour - StartHour) * 60);
 
             // Only tens of minutes are shown: the exact minutes would add pressure for nothing.

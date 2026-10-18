@@ -19,27 +19,40 @@ MonoBehaviour:
   noLevels:
   - minHealth: 70
     buttonScale: 1
+    arrangement: 0
   - minHealth: 40
-    buttonScale: 0.8
+    buttonScale: 0.9
+    arrangement: 1
   - minHealth: 0
-    buttonScale: 0.6
-  timerMinSeconds: 20
-  timerMaxSeconds: 60
+    buttonScale: 0.8
+    arrangement: 2
+  responseSeconds: 46
   levels:
-  - yesFollowers: 30000
+  - yesFollowers: 120000
+    maybeFollowers: 60000
     evasiveFollowers: -3000
     yesHealth: -15
+    maybeHealth: -7
     evasiveHealth: 0
-  - yesFollowers: 100000
-    evasiveFollowers: -10000
+  - yesFollowers: 140000
+    maybeFollowers: 70000
+    evasiveFollowers: -5000
     yesHealth: -20
+    maybeHealth: -10
     evasiveHealth: 5
-  - yesFollowers: 230000
-    evasiveFollowers: -23000
+  - yesFollowers: 155000
+    maybeFollowers: 77500
+    evasiveFollowers: -10000
     yesHealth: -25
+    maybeHealth: -12
     evasiveHealth: 5
+  musicVolume: 0.3
+  sfxVolume: 1
+  musicCrossfadeSeconds: 2.5
   noFollowers: -100000
   noHealth: 30
+  goodMaxYes: 3
+  goodMinNegativeShare: 0.5
   notificationLifetime: 30
   expireFollowersMultiplier: 1.5
   days:

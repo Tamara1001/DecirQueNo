@@ -51,7 +51,7 @@ namespace DecirQueNo.Tests
 
             AssertInvariants(report);
             Assert.AreEqual(1, report.No, "The real No exists only in the final message.");
-            Assert.AreEqual(8, report.Maybe, "Before the final message the bot takes the lukewarm No.");
+            Assert.AreEqual(8, report.Evasive, "Before the final message the bot takes the lukewarm No.");
             Assert.AreEqual(Ending.Happy, report.Ending, "Learning to say No must lead to the happy ending.");
         }
 
@@ -75,17 +75,44 @@ namespace DecirQueNo.Tests
             AssertInvariants(report);
             Assert.Greater(report.Expired, 0, "Every notification should have expired.");
             Assert.AreEqual(9, report.Expired, "Every message of the script expires.");
-            Assert.AreEqual(0, report.Yes + report.Maybe + report.No, "The ignorer never answers anything.");
-            Assert.AreNotEqual(Ending.Happy, report.Ending, "Ignoring everything must not be a way to the happy ending.");
+            Assert.AreEqual(0, report.Yes + report.Maybe + report.Evasive + report.No, "The ignorer never answers anything.");
+            Assert.AreEqual(Ending.Neutral, report.Ending, "Ignoring everything ends in the middle: no goal and no No.");
         }
 
         [UnityTest]
-        public IEnumerator BalancedBot_FinishesTheGame()
+        public IEnumerator HesitantBot_GetsTheMiddleEnding()
+        {
+            var report = new BotReport();
+            yield return new BotPlayer(new HesitantStrategy(), report).Play();
+
+            AssertInvariants(report);
+            Assert.AreEqual(9, report.Maybe, "The hesitant bot answers the in-between phrase every time.");
+            Assert.Less(report.FinalFollowers, report.GoalFollowers, "Only saying 'maybe' must not reach the goal.");
+            Assert.AreEqual(Ending.Neutral, report.Ending, "Saying maybe to everything ends in the middle.");
+        }
+
+        [UnityTest]
+        public IEnumerator GoalChaserBot_ReachesTheGoalWithAboutSeventyPercentYes()
+        {
+            var report = new BotReport();
+            yield return new BotPlayer(new GoalChaserStrategy(), report).Play();
+
+            AssertInvariants(report);
+            Assert.GreaterOrEqual(report.FinalFollowers, report.GoalFollowers, "6 Yes out of 9 and the rest 'maybe' must reach the goal.");
+            Assert.AreEqual(Ending.Sad, report.Ending);
+        }
+
+        [UnityTest]
+        public IEnumerator BalancedBot_GetsHappyEnding()
         {
             var report = new BotReport();
             yield return new BotPlayer(new BalancedStrategy(), report).Play();
 
             AssertInvariants(report);
+            Assert.LessOrEqual(report.Yes, 3, "The good path says Yes only at the beginning.");
+            Assert.GreaterOrEqual(report.Evasive + report.No, 5, "The good path refuses at least half of the messages.");
+            Assert.AreEqual(1, report.No);
+            Assert.AreEqual(Ending.Happy, report.Ending, "Some Yes at the start, mostly refusals and the final No is the good ending.");
         }
 
         private static void SaveReport(BotReport report)

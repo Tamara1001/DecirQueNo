@@ -22,6 +22,9 @@ namespace DecirQueNo
         [Tooltip("Complying answer (the checkmark in the board).")]
         public List<string> yesWords = new List<string>();
 
+        [Tooltip("In-between answer ('tal vez', 'lo voy a pensar'). Balanced effects.")]
+        public List<string> maybeWords = new List<string>();
+
         [Tooltip("Evasive answer, the 'almost a no' (the siren in the board). From level 2 it is the lukewarm No.")]
         public List<string> evasiveWords = new List<string>();
 
@@ -29,20 +32,19 @@ namespace DecirQueNo
         public List<string> noWords = new List<string>();
 
         [Header("Replies of the sender")]
+        [Tooltip("Lines separated by a line break are shown as separate chat bubbles.")]
         [TextArea] public string yesReply = "";
+        [TextArea] public string maybeReply = "";
         [TextArea] public string evasiveReply = "";
         [TextArea] public string noReply = "";
-
-        [Header("Validation")]
-        [Tooltip("Fragments exactly as written in the Miro board. Used by tests to spot banks that cannot be built.")]
-        public List<string> sourceBank = new List<string>();
 
         public IReadOnlyList<string> GetWords(PhraseType type)
         {
             switch (type)
             {
                 case PhraseType.Yes: return yesWords;
-                case PhraseType.Maybe: return evasiveWords;
+                case PhraseType.Maybe: return maybeWords;
+                case PhraseType.Evasive: return evasiveWords;
                 default: return noWords;
             }
         }
@@ -52,7 +54,8 @@ namespace DecirQueNo
             switch (type)
             {
                 case PhraseType.Yes: return yesReply;
-                case PhraseType.Maybe: return evasiveReply;
+                case PhraseType.Maybe: return maybeReply;
+                case PhraseType.Evasive: return evasiveReply;
                 default: return noReply;
             }
         }

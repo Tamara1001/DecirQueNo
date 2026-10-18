@@ -1,4 +1,4 @@
-# DESIGN — Decir Que No
+# DESIGN — Still Typing... (antes "Decir Que No")
 
 Aventura narrativa de terror psicológico en 2D. Sos **Sam**, una influencer que acaba de viralizarse. Una influencer famosa, su manager y un patrocinador te llevan, de a poco, a ceder cada vez más. La moraleja: **aprender a decir que no**.
 

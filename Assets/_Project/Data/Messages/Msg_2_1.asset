@@ -13,40 +13,31 @@ MonoBehaviour:
   m_Name: Msg_2_1
   m_EditorClassIdentifier: DecirQueNo::DecirQueNo.MessageData
   sender: Christian
-  body: "Buenas noches, Samantha\nValerie me pas\xF3 tu contacto. Veo pontencial
-    comercia en tu perfil.\nPara representarte exijo disponibilidad total 24/7. Si
+  body: "Buenas noches, Samantha.\nValerie me pas\xF3 tu contacto. Veo potencial
+    comercial en tu perfil.\nPara representarte exijo disponibilidad total 24/7.\nSi
     tienes clases o compromisos, los cancelas ya."
   level: 2
   isFinal: 0
   yesWords:
-  - Tengo tiempo
-  - total,
-  - estoy a
-  - su entera
-  - "disposici\xF3n,"
-  - "se\xF1or Christian. \U0001F64F"
+  - "S\xED,"
+  - cancelo
+  - todo.
+  maybeWords:
+  - "D\xE9jame"
+  - revisar
+  - mis horarios.
   evasiveWords:
-  - Tengo compromisos
-  - previos, pero
-  - "intentar\xE9 acomodar"
-  - "mis horarios, \u23F3"
-  - "se\xF1or Vega. \U0001F647\u200D\u2640\uFE0F"
+  - No voy
+  - a cancelar
+  - toda
+  - mi vida.
   noWords: []
   yesReply: "Sab\xEDa que eras inteligente. Tienes un brillo \xFAnico que Valerie
     jam\xE1s tuvo.\nTe envi\xE9 el cronograma a tu correo. No me falles."
+  maybeReply: "Samantha, tienes un talento demasiado grande como para desperdiciarlo
+    en cosas mediocres.\nNo puedo ayudarte si t\xFA misma no te la crees. Cancela
+    tus compromisos y enf\xF3cate en tu contenido."
   evasiveReply: "Samantha, tienes un talento demasiado grande como para desperdiciarlo
-    en cosas mediocres.\nYo veo en ti mucho potencial, no puedo ayudarte si t\xFA
-    misma no te la crees. Cancela tus compromisos y enf\xF3cate en tu futura carrera
-    de influencer famosa."
+    en cosas mediocres.\nNo puedo ayudarte si t\xFA misma no te la crees. Cancela
+    tus compromisos y enf\xF3cate en tu contenido."
   noReply: 
-  sourceBank:
-  - "mis horarios, \u23F3"
-  - estoy a
-  - previos, pero
-  - "se\xF1or Christian. \U0001F64F"
-  - Tengo tiempo
-  - "intentar\xE9 acomodar"
-  - su entera
-  - Tengo compromisos
-  - "se\xF1or Vega. \U0001F647\u200D\u2640\uFE0F"
-  - "total, disposici\xF3n,"

@@ -44,6 +44,18 @@ namespace DecirQueNo
             OnChanged?.Invoke();
         }
 
+        // Puts back a notification the player opened and then left, keeping what is left of its life.
+        public void Restore(Notification notification)
+        {
+            if (_pending.Contains(notification))
+            {
+                return;
+            }
+
+            _pending.Insert(0, notification);
+            OnChanged?.Invoke();
+        }
+
         public void Remove(Notification notification)
         {
             if (_pending.Remove(notification))

@@ -19,15 +19,13 @@ MonoBehaviour:
   level: 3
   isFinal: 1
   yesWords:
-  - "Est\xE1 bien,"
-  - he hecho
-  - de todo
-  - para llegar
-  - "hasta aqu\xED,"
-  - ya no
-  - me queda
-  - "m\xE1s que"
-  - ceder ahora.
+  - "S\xED,"
+  - lo
+  - grabo.
+  maybeWords:
+  - "D\xE9jame"
+  - respirar
+  - un momento.
   evasiveWords: []
   noWords:
   - No, no
@@ -35,37 +33,15 @@ MonoBehaviour:
   - abrir
   - "la c\xE1mara,"
   - no voy
-  - a exponerme
-  - ante nadie
-  - y no
-  - voy a
-  - contestar
-  - un solo
-  - "mensaje m\xE1s."
-  yesReply: "Final de la ruta\n\nYa que m\xE1s da, si ya perd\xED todo incluso a
-    mi misma..\n\nM\xE1s n\xFAmeros, m\xE1s vistas y eso significa que no estoy sola..."
+  - a
+  - exponerme.
+  yesReply: "Final de la ruta\n\nYa que m\xE1s da, si ya perd\xED todo, incluso a
+    m\xED misma...\n\nM\xE1s n\xFAmeros, m\xE1s vistas y eso significa que no estoy
+    sola..."
+  maybeReply: "Final de la ruta\n\nYa que m\xE1s da, si ya perd\xED todo, incluso
+    a m\xED misma...\n\nM\xE1s n\xFAmeros, m\xE1s vistas y eso significa que no estoy
+    sola..."
   evasiveReply: 
   noReply: "Final de la ruta\n\nY si eso significa perder la cuenta, el dinero, los
     contratos y quedarme sola sin nada despu\xE9s de haber destruido todo por complacerlos,
-    que as\xED sea. Hasta aqu\xED llegu\xE9..\n\nNO"
-  sourceBank:
-  - "la c\xE1mara,"
-  - no voy
-  - un solo
-  - "Est\xE1 bien,"
-  - a exponerme
-  - he hecho
-  - "mensaje m\xE1s."
-  - ante nadie
-  - de todo
-  - para llegar
-  - No, no
-  - y no
-  - "hasta aqu\xED,"
-  - ya no
-  - voy a
-  - me queda
-  - "m\xE1s que"
-  - ceder ahora.
-  - abrir
-  - contestar
+    que as\xED sea. Hasta aqu\xED llegu\xE9...\n\n\xA1NO!"

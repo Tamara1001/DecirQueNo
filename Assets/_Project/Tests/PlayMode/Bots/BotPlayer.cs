@@ -37,8 +37,9 @@ namespace DecirQueNo.Tests.Bots
                 switch (SceneManager.GetActiveScene().name)
                 {
                     case GameManager.InstructionsScene:
+                        // The story and tutorial are slides: keep pressing Next until the game starts.
                         ClickOnlyButton();
-                        yield return WaitForSceneChange(GameManager.InstructionsScene);
+                        yield return new WaitForSecondsRealtime(0.5f);
                         break;
                     case GameManager.GameScene:
                         yield return PlayGameFrame();
@@ -46,6 +47,13 @@ namespace DecirQueNo.Tests.Bots
                     case GameManager.SleepScene:
                         RecordSummary();
                         ClickOnlyButton();
+                        if (GameManager.Instance.Ending == Ending.None)
+                        {
+                            // Night mirror -> morning mirror -> next day.
+                            yield return null;
+                            ClickOnlyButton();
+                        }
+
                         yield return WaitForSceneChange(GameManager.SleepScene);
                         break;
                     default:
@@ -136,14 +144,16 @@ namespace DecirQueNo.Tests.Bots
         }
 
         // Only the final message has a real No, and it has no evasive answer. When the wanted phrase is not
-        // there the bot takes the closest one: No -> evasive -> Yes.
+        // there the bot takes the closest one: No -> evasive -> maybe -> Yes.
         private static PhraseOption PickOption(System.Collections.Generic.IReadOnlyList<PhraseOption> options, PhraseType wanted)
         {
             PhraseType[] order = wanted == PhraseType.No
-                ? new[] { PhraseType.No, PhraseType.Maybe, PhraseType.Yes }
-                : wanted == PhraseType.Maybe
-                    ? new[] { PhraseType.Maybe, PhraseType.Yes }
-                    : new[] { PhraseType.Yes };
+                ? new[] { PhraseType.No, PhraseType.Evasive, PhraseType.Maybe, PhraseType.Yes }
+                : wanted == PhraseType.Evasive
+                    ? new[] { PhraseType.Evasive, PhraseType.Maybe, PhraseType.Yes }
+                    : wanted == PhraseType.Maybe
+                        ? new[] { PhraseType.Maybe, PhraseType.Yes }
+                        : new[] { PhraseType.Yes };
 
             foreach (PhraseType type in order)
             {
@@ -181,15 +191,20 @@ namespace DecirQueNo.Tests.Bots
             }
         }
 
+        // The main button of a scene is the one named "Button" (Play, Next/Start, Continue). Other buttons
+        // (Credits, Back) are extras.
         private static void ClickOnlyButton()
         {
-            Button[] buttons = UnityEngine.Object.FindObjectsByType<Button>(FindObjectsSortMode.None);
-            if (buttons.Length != 1)
+            foreach (Button button in UnityEngine.Object.FindObjectsByType<Button>(FindObjectsSortMode.None))
             {
-                throw new InvalidOperationException($"Expected exactly 1 button in '{SceneManager.GetActiveScene().name}', found {buttons.Length}.");
+                if (button.name == "Button")
+                {
+                    button.onClick.Invoke();
+                    return;
+                }
             }
 
-            buttons[0].onClick.Invoke();
+            throw new InvalidOperationException($"No main button in '{SceneManager.GetActiveScene().name}'.");
         }
 
         private IEnumerator WaitForScene(string sceneName)

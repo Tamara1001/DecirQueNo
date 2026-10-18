@@ -19,31 +19,26 @@ MonoBehaviour:
   level: 3
   isFinal: 0
   yesWords:
-  - ya bajo
-  - pero que
-  - no demore
-  - mucho ya
-  - es tarde
+  - "S\xED,"
+  - ya
+  - bajo.
+  maybeWords:
+  - "No s\xE9"
+  - si
+  - "deber\xEDa."
   evasiveWords:
-  - "no deber\xEDas"
-  - "estar aqu\xED"
-  - es demasiado
-  - es necesario
-  - de frente
+  - No voy
+  - a bajar,
+  - vete
+  - "de aqu\xED"
+  - ahora.
   noWords: []
-  yesReply: "Solo tomar\xE1 unos minutos, Samantha.\nAbre la reja principal. Ya cruc\xE9
-    la acera."
-  evasiveReply: "Por supuesto que es necesario; la confianza se construye cara a
-    cara.\nUn vecino me abri\xF3 la puerta principal del edificio. Voy subiendo."
+  yesReply: "Esa es mi estrella.\nNo tardes, hace fr\xEDo aqu\xED afuera y tenemos
+    mucho de qu\xE9 hablar a solas."
+  maybeReply: "La confianza se construye cara a cara.\nMe obligas a hacer unas cuantas
+    llamadas para que Christian te quite todo lo que tienes.\nUn vecino me abri\xF3
+    la puerta principal del edificio. Voy subiendo."
+  evasiveReply: "La confianza se construye cara a cara.\nMe obligas a hacer unas
+    cuantas llamadas para que Christian te quite todo lo que tienes.\nUn vecino me
+    abri\xF3 la puerta principal del edificio. Voy subiendo."
   noReply: 
-  sourceBank:
-  - ya bajo
-  - pero que
-  - no demore
-  - mucho ya
-  - es tarde
-  - "no deber\xEDas"
-  - "estar aqu\xED"
-  - es demasiado
-  - es necesario
-  - de frente

@@ -15,38 +15,32 @@ MonoBehaviour:
   sender: Contacto VIP
   body: "Buenas noches, Samantha. Disculpa la hora.\nLlevo semanas siguiendo tu contenido.
     Tienes una sensibilidad que hace mucha falta en redes.\nAcord\xE9 con Christian
-    patrocinar tu pr\xF3ximo proyecto. Me encantar\xEDa una videollamada breve para
+    patrocinar tu pr\xF3ximo proyecto.\nMe encantar\xEDa una videollamada breve para
     conocerte mejor."
   level: 3
   isFinal: 0
   yesWords:
-  - ya entro
-  - pero esto
-  - me da
-  - pena tan
-  - tarde igual
+  - "S\xED,"
+  - me
+  - conecto.
+  maybeWords:
+  - "\xBFPodemos"
+  - dejarlo
+  - para
+  - "ma\xF1ana?"
   evasiveWords:
-  - agradezco el
-  - apoyo pero
-  - me da
-  - desconfianza la
-  - "hora se\xF1or"
+  - No voy
+  - a hacer
+  - videollamadas
+  - a esta
+  - hora.
   noWords: []
-  yesReply: 'No sientas pena, Samantha, el talento no tiene horario.
-
-    Es solo
-    una charla entre profesionales. Abre el enlace cuando gustes.'
-  evasiveReply: "Entiendo tus precauciones, habla muy bien de ti.\nChristian te garantiz\xF3
-    mi seriedad y la cifra pactada. Entra un momento, por favor."
+  yesReply: "Perfecto, Samantha.\nTe env\xEDo el enlace privado.\nAseg\xFArate de
+    estar completamente sola, quiero toda tu atenci\xF3n."
+  maybeReply: "No sientas pena, Samantha, el talento no tiene horario.\nQu\xE9 l\xE1stima
+    ver que te falta ambici\xF3n.\nChristian me asegur\xF3 que tu disponibilidad
+    era total."
+  evasiveReply: "No sientas pena, Samantha, el talento no tiene horario.\nQu\xE9
+    l\xE1stima ver que te falta ambici\xF3n.\nChristian me asegur\xF3 que tu disponibilidad
+    era total."
   noReply: 
-  sourceBank:
-  - ya entro
-  - pero esto
-  - me da
-  - pena tan
-  - tarde igual
-  - agradezco el
-  - apoyo pero
-  - me da
-  - desconfianza la
-  - "hora se\xF1or"

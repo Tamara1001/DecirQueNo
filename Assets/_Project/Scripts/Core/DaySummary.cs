@@ -7,6 +7,7 @@ namespace DecirQueNo
         public int HealthDelta;
         public int Yes;
         public int Maybe;
+        public int Evasive;
         public int No;
         public int Expired;
     }
