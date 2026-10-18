@@ -15,7 +15,7 @@ namespace DecirQueNo
         [SerializeField] private TMP_Text _emptyText;
 
         private readonly Dictionary<Notification, NotificationItemUI> _items = new Dictionary<Notification, NotificationItemUI>();
-        private readonly HashSet<Notification> _expiring = new HashSet<Notification>();
+        private ConversationUI _conversationUi;
         private bool _subscribed;
 
         private void Start()
@@ -23,10 +23,15 @@ namespace DecirQueNo
             UiSprites.Round(_container.GetComponent<Image>(), 22f);
             _day.Notifications.OnChanged += Refresh;
             _day.Notifications.OnNotificationAdded += HandleAdded;
-            _day.Notifications.OnExpired += HandleExpired;
             _conversation.OnOpened += HandleOpened;
             _conversation.OnClosed += HandleClosed;
             _conversation.OnAbandoned += HandleClosed;
+            _conversationUi = FindFirstObjectByType<ConversationUI>();
+            if (_conversationUi != null)
+            {
+                _conversationUi.OnReadOnlyClosed += HandleClosed;
+            }
+
             _subscribed = true;
             Refresh();
         }
@@ -45,7 +50,11 @@ namespace DecirQueNo
 
             _day.Notifications.OnChanged -= Refresh;
             _day.Notifications.OnNotificationAdded -= HandleAdded;
-            _day.Notifications.OnExpired -= HandleExpired;
+            if (_conversationUi != null)
+            {
+                _conversationUi.OnReadOnlyClosed -= HandleClosed;
+            }
+
             if (_conversation != null)
             {
                 _conversation.OnOpened -= HandleOpened;
@@ -65,18 +74,25 @@ namespace DecirQueNo
             Refresh();
         }
 
-        private void HandleExpired(Notification notification)
+        // Opens an expired message to read it, without the word builder.
+        private void ReadExpired(MessageData message)
         {
-            _expiring.Add(notification);
+            if (_conversation.IsBusy || _conversationUi == null)
+            {
+                return;
+            }
+
+            _root.SetActive(false);
+            _conversationUi.ShowReadOnly(message);
         }
 
         private void Refresh()
         {
-            // Remove the items whose notification is gone: expired ones fade out, opened ones just disappear.
+            // Remove the items whose notification is gone (opened ones just disappear). Expired ones stay, in grey.
             var gone = new List<Notification>();
             foreach (KeyValuePair<Notification, NotificationItemUI> pair in _items)
             {
-                if (!_day.Notifications.Contains(pair.Key))
+                if (!_day.Notifications.Contains(pair.Key) && !_day.Notifications.HasExpired(pair.Key))
                 {
                     gone.Add(pair.Key);
                 }
@@ -84,16 +100,8 @@ namespace DecirQueNo
 
             foreach (Notification notification in gone)
             {
-                NotificationItemUI item = _items[notification];
+                Destroy(_items[notification].gameObject);
                 _items.Remove(notification);
-                if (_expiring.Remove(notification))
-                {
-                    item.PlayExpire();
-                }
-                else
-                {
-                    Destroy(item.gameObject);
-                }
             }
 
             // Add the new arrivals, with a pop only when the list is visible.
@@ -107,6 +115,21 @@ namespace DecirQueNo
                 NotificationItemUI item = Instantiate(_itemPrefab, _container);
                 item.Setup(notification, _day.Select, _root.activeInHierarchy);
                 _items[notification] = item;
+            }
+
+            foreach (Notification notification in _day.Notifications.ExpiredList)
+            {
+                if (!_items.TryGetValue(notification, out NotificationItemUI item))
+                {
+                    item = Instantiate(_itemPrefab, _container);
+                    item.Setup(notification, _day.Select, false);
+                    _items[notification] = item;
+                }
+
+                if (!item.IsExpired)
+                {
+                    item.MarkExpired(ReadExpired);
+                }
             }
 
             _emptyText.gameObject.SetActive(_items.Count == 0);

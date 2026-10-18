@@ -37,8 +37,26 @@ namespace DecirQueNo
             manager.EnsureGame();
             _continueLabel = _continueButton.GetComponentInChildren<TMP_Text>();
             _continueButton.onClick.AddListener(HandleContinue);
+            if (manager.CurrentDay > 1)
+            {
+                BuildSanityFilter();
+            }
+
             BuildCard();
             ShowNight();
+        }
+
+        // The low-sanity filter of the game also covers the night mirror and the morning, under the card.
+        private void BuildSanityFilter()
+        {
+            var go = new GameObject("Vignette", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            go.transform.SetParent(transform, false);
+            var rect = (RectTransform)go.transform;
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            go.AddComponent<HealthVignetteUI>();
         }
 
         // Same look as the opening slides: a card with a navy border next to the mirror.
@@ -144,7 +162,9 @@ namespace DecirQueNo
         private void SetLook(bool night)
         {
             GameManager manager = GameManager.Instance;
-            _mirror.sprite = Resources.Load<Sprite>(CharacterFolder + ExpressionName(manager.Stats.Health, manager.Config, night));
+            // After the first day Sam is still fine, whatever happened: the sanity only shows from the second day on.
+            int health = manager.CurrentDay <= 1 ? manager.Config.maxHealth : manager.Stats.Health;
+            _mirror.sprite = Resources.Load<Sprite>(CharacterFolder + ExpressionName(health, manager.Config, night));
             foreach (Image image in _tinted)
             {
                 image.color = night ? NightTint : Color.white;

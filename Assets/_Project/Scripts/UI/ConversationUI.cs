@@ -61,6 +61,7 @@ namespace DecirQueNo
         private GameObject _dock;
         private string _body = "";
         private bool _replying;
+        private bool _readOnly;
         private int _lastPhraseCount;
         private int _longestOption;
 
@@ -68,6 +69,37 @@ namespace DecirQueNo
 
         public IReadOnlyList<WordButtonUI> BankButtons => _bankButtons;
         public bool SendInteractable => _sendButton.interactable;
+
+        // Raised when the player leaves an expired message they were reading.
+        public event System.Action OnReadOnlyClosed;
+
+        // An expired message can still be read, but nothing can be answered anymore.
+        public void ShowReadOnly(MessageData message)
+        {
+            _readOnly = true;
+            _root.SetActive(true);
+            if (_dock != null)
+            {
+                _dock.SetActive(false);
+            }
+
+            StopReply();
+            if (_typing != null)
+            {
+                StopCoroutine(_typing);
+                _typing = null;
+            }
+
+            _header.Show(message.sender);
+            _header.SetTyping(false);
+            SetBuilderVisible(false);
+            _sendButton.gameObject.SetActive(false);
+            SetHistoryExpanded(true);
+            _body = TextDisplay.ForScreen(message.body, ShowEmojis);
+            _chat.Clear();
+            AddIncomingBubbles(message.sender, _body);
+            _chat.AddHint("Este mensaje venció. Ya no puedes responderlo.");
+        }
 
         // Same path a mouse click takes. Also used by the test bots.
         public void ClickSend()
@@ -214,6 +246,7 @@ namespace DecirQueNo
 
         private void HandleOpened(ConversationController conversation)
         {
+            _readOnly = false;
             _root.SetActive(true);
             if (_dock != null)
             {
@@ -477,6 +510,16 @@ namespace DecirQueNo
         // The arrow of the header: back to the list of chats without answering.
         private void HandleBackClicked()
         {
+            if (_readOnly)
+            {
+                AudioManager.Play(Sfx.MenuSelect);
+                _readOnly = false;
+                _root.SetActive(false);
+                ShowDock();
+                OnReadOnlyClosed?.Invoke();
+                return;
+            }
+
             if (_replying || !_conversation.IsOpen)
             {
                 return;

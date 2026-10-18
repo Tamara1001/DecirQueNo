@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 namespace DecirQueNo
 {
-    // The last screen: it is night, Sam in the shadowed mirror and a card with how the run ended.
-    // Same look as the opening slides and the Sleep scene.
+    // The last screen: the cutscene of the ending (good, bad) with a card with how the run ended. The middle ending
+    // has no cutscene yet and keeps Sam in the shadowed mirror, like the opening slides and the Sleep scene.
     public class EndingUI : MonoBehaviour
     {
         private const string ClosingHeader = "Final de la ruta";
@@ -15,10 +15,15 @@ namespace DecirQueNo
         private static readonly Color Pink = new Color(0.98f, 0.67f, 0.94f);
         private static readonly Color Accent = new Color(0.62f, 0.25f, 0.62f);
 
+        private const float CutsceneSeconds = 1.6f;
+        private const float CutsceneZoom = 1.05f;
+
         [SerializeField] private TMP_Text _text;
         [SerializeField] private Button _restartButton;
         [SerializeField] private Button _menuButton;
         [SerializeField] private Sprite _mirrorFrame;
+
+        private RectTransform _cutscene;
 
         private void Start()
         {
@@ -30,7 +35,7 @@ namespace DecirQueNo
             RectTransform card = BuildCard(out Image fill);
             BuildContent(manager, card);
             BuildButtons(manager, card);
-            StartCoroutine(PopIn(card));
+            StartCoroutine(PopIn(card, _cutscene != null ? CutsceneSeconds : 0f));
         }
 
         private void HideOld(string name)
@@ -45,6 +50,11 @@ namespace DecirQueNo
         // Night background and Sam in shadow, with the expression that matches how the run went.
         private void BuildNight(GameManager manager)
         {
+            if (BuildCutscene(manager.Ending))
+            {
+                return;
+            }
+
             Transform background = transform.Find("Background");
             if (background != null)
             {
@@ -77,6 +87,46 @@ namespace DecirQueNo
                 frameImage.color = NightTint;
                 frameImage.raycastTarget = false;
             }
+        }
+
+        // The full-screen picture of the ending, under the card. False when this ending has none.
+        private bool BuildCutscene(Ending ending)
+        {
+            string name = ending == Ending.Happy ? "Final_Bueno" : ending == Ending.Neutral ? null : "Final_Malo";
+            Sprite sprite = name != null ? Resources.Load<Sprite>("Cutscenes/" + name) : null;
+            if (sprite == null)
+            {
+                return false;
+            }
+
+            var go = new GameObject("Cutscene", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(CanvasGroup));
+            go.transform.SetParent(transform, false);
+            go.transform.SetSiblingIndex(0);
+            _cutscene = (RectTransform)go.transform;
+            Place(_cutscene, 0f, 1f, 0f, 1f);
+            var image = go.GetComponent<Image>();
+            image.sprite = sprite;
+            image.raycastTarget = false;
+            StartCoroutine(RevealCutscene(_cutscene, go.GetComponent<CanvasGroup>()));
+            HideOld("Background");
+            return true;
+        }
+
+        // The picture fades in from black and drifts slowly closer.
+        private static IEnumerator RevealCutscene(RectTransform picture, CanvasGroup group)
+        {
+            float time = 0f;
+            while (time < CutsceneSeconds)
+            {
+                time += Time.unscaledDeltaTime;
+                float k = Mathf.Clamp01(time / CutsceneSeconds);
+                group.alpha = k;
+                picture.localScale = Vector3.one * Mathf.Lerp(CutsceneZoom, 1f, k);
+                yield return null;
+            }
+
+            group.alpha = 1f;
+            picture.localScale = Vector3.one;
         }
 
         private static string Expression(Ending ending)
@@ -193,9 +243,15 @@ namespace DecirQueNo
         }
 
         // The card fades in and settles from a slightly smaller size.
-        private IEnumerator PopIn(RectTransform card)
+        private IEnumerator PopIn(RectTransform card, float delay)
         {
             var group = card.GetComponent<CanvasGroup>();
+            group.alpha = 0f;
+            for (float wait = 0f; wait < delay; wait += Time.unscaledDeltaTime)
+            {
+                yield return null;
+            }
+
             const float seconds = 0.5f;
             float time = 0f;
             while (time < seconds)

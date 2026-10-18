@@ -139,6 +139,7 @@ namespace DecirQueNo
             if (notification.Remaining <= 0f)
             {
                 Expire(notification.Message);
+                Notifications.AddExpired(notification);
             }
             else
             {

@@ -10,7 +10,9 @@ Fuente: carpeta de Drive "Carpeta WGJ 2026". Los originales se descargan a `Driv
 | `Expresiones/Sam_{Feliz,Blush,Triste}_{Dia,Sombra}` | `Resources/Characters/` (724x1024) | Espejo de Sleep. Dia = mañana, Sombra = noche. Feliz/Blush/Triste según los tramos de cordura (los mismos de los niveles del No) |
 | `Concept/` bocetos y Sam SAD (solo línea) | no se importan (solo `Sam_Triste_Lineart.png` en `Resources/Characters/`, sin uso) | Referencia |
 | `UI/cuadros-texto-mensajes/` vip, cristian, valerie, protagonista | `Resources/UI/Bubble_*.png` (9-slice) | Burbujas del chat: remitente recibido a la izquierda, Sam (protagonista) a la derecha |
-| `Audio/BGM/*.wav` | `Resources/Audio/BGM_*.ogg` | Menu = menú/instrucciones; Buena_Salud / Poca_Salud = Game y Sleep según salud; Ganar / Perder = Ending |
+| `Audio/BGM/*.wav` | `Resources/Audio/BGM_*.ogg` | Menu = menú/instrucciones; Buena_Salud / Poca_Salud = Game y Sleep según salud; Ganar / Perder / Neutral = Ending (bueno / malo / intermedio) |
+| Cutscenes de los finales | `Resources/Cutscenes/Final_Bueno.jpg`, `Final_Malo.jpg` | Reemplazan el espejo en Ending. **Falta la del final intermedio** (hoy usa a Sam en el espejo) |
+| Sam de cuerpo completo | `Resources/Characters/Sam_CuerpoCompleto.png` | Slides 1 y 5 del tutorial |
 | `Audio/SFX/*.wav` | `Resources/Audio/SFX_*.ogg` (recortados al sonido útil) | Notificación = llega mensaje; Escribir = cada palabra; Enviar_Mensaje = enviar; Selección_Menú = botones de menú |
 | `celular/` celular, fondo-celular, bottom-menu-celular | `Art/Phone/` (sin reducir) | Panel del celular en Game: pantalla blanca + marco encima + barra inferior |
 | `banner-notificaciones/` cristian, valerie, vip | `Resources/UI/Banner_*.png` (256 px, 9-slice) | Fondo de cada notificación según remitente |

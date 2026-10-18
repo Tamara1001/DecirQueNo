@@ -24,7 +24,11 @@ namespace DecirQueNo
     {
         private readonly List<Notification> _pending = new List<Notification>();
 
+        // Messages that ran out of time. They stay in the chat list (greyed out) so they can still be read.
+        private readonly List<Notification> _expiredList = new List<Notification>();
+
         public IReadOnlyList<Notification> Pending => _pending;
+        public IReadOnlyList<Notification> ExpiredList => _expiredList;
         public int Count => _pending.Count;
 
         public event Action<Notification> OnNotificationAdded;
@@ -34,6 +38,11 @@ namespace DecirQueNo
         public bool Contains(Notification notification)
         {
             return _pending.Contains(notification);
+        }
+
+        public bool HasExpired(Notification notification)
+        {
+            return _expiredList.Contains(notification);
         }
 
         public void Add(MessageData message, float lifetime)
@@ -54,6 +63,16 @@ namespace DecirQueNo
 
             _pending.Insert(0, notification);
             OnChanged?.Invoke();
+        }
+
+        // For a notification that expired while the player had it open and then left.
+        public void AddExpired(Notification notification)
+        {
+            if (!_expiredList.Contains(notification))
+            {
+                _expiredList.Add(notification);
+                OnChanged?.Invoke();
+            }
         }
 
         public void Remove(Notification notification)
@@ -86,6 +105,7 @@ namespace DecirQueNo
             foreach (Notification notification in expired)
             {
                 _pending.Remove(notification);
+                _expiredList.Add(notification);
                 OnExpired?.Invoke(notification);
             }
 

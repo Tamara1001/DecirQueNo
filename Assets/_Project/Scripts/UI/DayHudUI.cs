@@ -13,16 +13,39 @@ namespace DecirQueNo
         private static readonly Color Pink = new Color(0.98f, 0.67f, 0.94f);
         private const float BorderWidth = 7f;
 
-        // Light of the room along the day (09:00 to 23:00): clear until the afternoon, golden at sunset, dark at night.
-        private static readonly Color DayLight = new Color(1f, 0.95f, 0.8f, 0f);
-        private static readonly Color AfternoonLight = new Color(1f, 0.9f, 0.6f, 0.13f);
-        private static readonly Color SunsetLight = new Color(1f, 0.76f, 0.42f, 0.22f);
-        private static readonly Color NightLight = new Color(0.1f, 0.15f, 0.55f, 0.52f);
+        // Light of the room along the day (09:00 to 23:00): clear until the afternoon, golden light, a sunset that goes
+        // from orange at the bottom to violet at the top with a warm glow and darkened corners, and then the blue night.
         private const float AfternoonStartsAt = 13.5f;
         private const float AfternoonFullAt = 16.5f;
         private const float SunsetPeakAt = 18.5f;
-        private const float NightFullAt = 21f;
+        private const float NightFullAt = 21.5f;
         private const float LightFollowSpeed = 1.5f;
+
+        private struct SkyLight
+        {
+            public Color Top;
+            public Color Bottom;
+            public float Glow;
+            public float Edge;
+
+            public static SkyLight Lerp(SkyLight a, SkyLight b, float t)
+            {
+                return new SkyLight
+                {
+                    Top = Color.Lerp(a.Top, b.Top, t),
+                    Bottom = Color.Lerp(a.Bottom, b.Bottom, t),
+                    Glow = Mathf.Lerp(a.Glow, b.Glow, t),
+                    Edge = Mathf.Lerp(a.Edge, b.Edge, t),
+                };
+            }
+        }
+
+        private static readonly SkyLight Day = new SkyLight { Top = new Color(1f, 0.95f, 0.8f, 0f), Bottom = new Color(1f, 0.95f, 0.8f, 0f), Glow = 0f, Edge = 0f };
+        private static readonly SkyLight Afternoon = new SkyLight { Top = new Color(1f, 0.88f, 0.62f, 0.05f), Bottom = new Color(1f, 0.8f, 0.5f, 0.14f), Glow = 0.1f, Edge = 0f };
+        private static readonly SkyLight Sunset = new SkyLight { Top = new Color(0.62f, 0.28f, 0.6f, 0.34f), Bottom = new Color(1f, 0.46f, 0.2f, 0.34f), Glow = 0.62f, Edge = 0.34f };
+        private static readonly SkyLight Night = new SkyLight { Top = new Color(0.06f, 0.1f, 0.42f, 0.58f), Bottom = new Color(0.12f, 0.15f, 0.52f, 0.46f), Glow = 0f, Edge = 0.2f };
+        private static readonly Color GlowColor = new Color(1f, 0.58f, 0.28f);
+        private static readonly Color EdgeColor = new Color(0.3f, 0.06f, 0.24f);
 
         [SerializeField] private DayController _day;
         [SerializeField] private TMP_Text _dayText;
@@ -30,7 +53,11 @@ namespace DecirQueNo
 
         private TMP_Text _phoneClock;
         private Image _light;
-        private Color _lightTarget = DayLight;
+        private UiGradient _gradient;
+        private Image _glow;
+        private Image _edge;
+        private SkyLight _current = Day;
+        private SkyLight _target = Day;
         private float _savedTimeScale = 1f;
         private GameObject _confirm;
 
@@ -66,7 +93,10 @@ namespace DecirQueNo
         {
             if (_light != null)
             {
-                _light.color = Color.Lerp(_light.color, _lightTarget, LightFollowSpeed * Time.unscaledDeltaTime);
+                _current = SkyLight.Lerp(_current, _target, LightFollowSpeed * Time.unscaledDeltaTime);
+                _gradient.SetColors(_current.Top, _current.Bottom);
+                _glow.color = new Color(GlowColor.r, GlowColor.g, GlowColor.b, _current.Glow);
+                _edge.color = new Color(EdgeColor.r, EdgeColor.g, EdgeColor.b, _current.Edge);
             }
         }
 
@@ -174,10 +204,20 @@ namespace DecirQueNo
             image.raycastTarget = false;
         }
 
-        // A tinted layer over the room (behind the phone and the board) that follows the hour of the day.
+        // Layers over the room (behind the phone and the board) that follow the hour of the day:
+        // the sky gradient, a warm glow of the low sun and the darkened corners.
         private void BuildLight()
         {
-            var go = new GameObject("TimeOfDayLight", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            _light = NewLightLayer("TimeOfDayLight", null, Vector2.zero, Vector2.one);
+            _gradient = _light.gameObject.AddComponent<UiGradient>();
+            _glow = NewLightLayer("SunGlow", UiNoise.Glow(), new Vector2(0.35f, -0.2f), new Vector2(1.6f, 0.95f));
+            _edge = NewLightLayer("SunsetEdge", UiNoise.EdgeShade(), Vector2.zero, Vector2.one);
+            _gradient.SetColors(Day.Top, Day.Bottom);
+        }
+
+        private Image NewLightLayer(string name, Sprite sprite, Vector2 anchorMin, Vector2 anchorMax)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
             go.transform.SetParent(transform, false);
             Transform phone = transform.Find("Phone");
             if (phone != null)
@@ -186,13 +226,15 @@ namespace DecirQueNo
             }
 
             var rect = (RectTransform)go.transform;
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-            _light = go.GetComponent<Image>();
-            _light.raycastTarget = false;
-            _light.color = DayLight;
+            var image = go.GetComponent<Image>();
+            image.raycastTarget = false;
+            image.sprite = sprite;
+            image.color = new Color(1f, 1f, 1f, 0f);
+            return image;
         }
 
         // Round button in the corner: back to the main menu, after asking.
@@ -392,7 +434,7 @@ namespace DecirQueNo
                 _phoneClock.fontStyle = FontStyles.Bold;
             }
 
-            _lightTarget = LightAt(HoursOf(clock));
+            _target = LightAt(HoursOf(clock));
         }
 
         private static float HoursOf(string clock)
@@ -406,29 +448,29 @@ namespace DecirQueNo
             return 9f;
         }
 
-        private static Color LightAt(float hours)
+        private static SkyLight LightAt(float hours)
         {
             if (hours <= AfternoonStartsAt)
             {
-                return DayLight;
+                return Day;
             }
 
             if (hours < AfternoonFullAt)
             {
-                return Color.Lerp(DayLight, AfternoonLight, (hours - AfternoonStartsAt) / (AfternoonFullAt - AfternoonStartsAt));
+                return SkyLight.Lerp(Day, Afternoon, (hours - AfternoonStartsAt) / (AfternoonFullAt - AfternoonStartsAt));
             }
 
             if (hours < SunsetPeakAt)
             {
-                return Color.Lerp(AfternoonLight, SunsetLight, (hours - AfternoonFullAt) / (SunsetPeakAt - AfternoonFullAt));
+                return SkyLight.Lerp(Afternoon, Sunset, (hours - AfternoonFullAt) / (SunsetPeakAt - AfternoonFullAt));
             }
 
             if (hours < NightFullAt)
             {
-                return Color.Lerp(SunsetLight, NightLight, (hours - SunsetPeakAt) / (NightFullAt - SunsetPeakAt));
+                return SkyLight.Lerp(Sunset, Night, (hours - SunsetPeakAt) / (NightFullAt - SunsetPeakAt));
             }
 
-            return NightLight;
+            return Night;
         }
     }
 }

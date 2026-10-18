@@ -30,3 +30,6 @@ Bots que juegan la partida completa con el **Unity Test Framework** (PlayMode). 
 
 ## Cómo mantenerlos
 Si cambian los números de `GameConfig`, el guion o los finales: correr los tests y ajustar las aserciones de `BotPlaythroughTests`.
+
+
+2026-10-18 (cierre): tras mensajes vencidos en gris, filtros de atardecer/poca salud y cutscenes de los finales, los 15 tests de PlayMode siguen pasando (los resultados de balance no cambian).

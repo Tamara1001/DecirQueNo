@@ -26,7 +26,7 @@ namespace DecirQueNo
             {
                 Title = "Eres Sam",
                 Body = "Tu cuarto es pequeño, tus días son idénticos y tu mayor terror es volverte invisible.",
-                Sam = "Sam_Feliz_Dia",
+                Sam = "Sam_CuerpoCompleto",
             },
             new Slide
             {
@@ -49,8 +49,8 @@ namespace DecirQueNo
             new Slide
             {
                 Title = "Cómo se juega",
-                Body = "Te llegan notificaciones en el celular. Abre una y arma tu respuesta tocando los bloques de texto.\nEl tiempo corre desde que abres la conversación. Si no abres un mensaje a tiempo, desaparece y pierdes seguidores.",
-                Sam = "Sam_Feliz_Dia",
+                Body = "Te llegan notificaciones en el celular. Abre una y arma tu respuesta tocando los bloques de texto.\nEl tiempo corre desde que abres la conversación. Si no abres un mensaje a tiempo, vence: queda en gris, ya no puedes responderlo y pierdes seguidores.",
+                Sam = "Sam_CuerpoCompleto",
                 Examples = new[] { ("", new[] { "Sí,", "ya", "bajo." }) },
             },
             new Slide

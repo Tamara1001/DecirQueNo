@@ -9,6 +9,8 @@ namespace DecirQueNo
     public class NotificationItemUI : MonoBehaviour
     {
         private static readonly Color FullLifeColor = new Color(0.91f, 0.96f, 0.97f);
+        private static readonly Color ExpiredColor = new Color(0.74f, 0.74f, 0.78f);
+        private static readonly Color ExpiredTextColor = new Color(0.38f, 0.38f, 0.43f);
         private const float BannerCornerScale = 2.3f;
         private const float LifeBarMargin = 0.08f;
         private const float LifeBarBottom = 9f;
@@ -22,13 +24,16 @@ namespace DecirQueNo
 
         private Notification _notification;
         private bool _expiring;
+        private bool _expired;
+
+        public bool IsExpired => _expired;
 
         public MessageData Message => _notification?.Message;
 
         // Same path a mouse click takes. Also used by the test bots.
         public void Click()
         {
-            if (!_expiring && _button.interactable)
+            if (!_expiring && !_expired && _button.interactable)
             {
                 _button.onClick.Invoke();
             }
@@ -95,6 +100,30 @@ namespace DecirQueNo
             rect.sizeDelta = new Vector2(0f, LifeBarHeight);
         }
 
+        // The message ran out of time: it stays in the list in grey, readable but no longer answerable.
+        public void MarkExpired(Action<MessageData> onRead)
+        {
+            _expired = true;
+            var background = GetComponent<Image>();
+            if (background != null)
+            {
+                // A plain grey pill instead of the colored banner of the sender.
+                background.pixelsPerUnitMultiplier = 1f;
+                UiSprites.Round(background, 30f);
+                background.color = ExpiredColor;
+            }
+
+            _label.color = ExpiredTextColor;
+            _label.text = $"{_notification.Message.sender}  (vencido)";
+            if (_lifeFill != null)
+            {
+                _lifeFill.gameObject.SetActive(false);
+            }
+
+            _button.onClick.RemoveAllListeners();
+            _button.onClick.AddListener(() => onRead?.Invoke(_notification.Message));
+        }
+
         // Fades and shrinks the item before it disappears. Used when the notification expired.
         public void PlayExpire()
         {
@@ -124,7 +153,7 @@ namespace DecirQueNo
         // The "Hace x" part follows the phone's clock, so waiting is visible.
         private void RefreshLabel()
         {
-            if (_notification == null || _expiring)
+            if (_notification == null || _expiring || _expired)
             {
                 return;
             }
@@ -141,7 +170,7 @@ namespace DecirQueNo
 
         private void UpdateLife()
         {
-            if (_notification == null || _lifeFill == null || _expiring)
+            if (_notification == null || _lifeFill == null || _expiring || _expired)
             {
                 return;
             }
