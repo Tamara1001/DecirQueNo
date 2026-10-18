@@ -85,8 +85,8 @@ namespace DecirQueNo
         };
 
         [Header("Audio")]
-        [Range(0f, 1f)] public float musicVolume = 0.3f;
-        [Range(0f, 1f)] public float sfxVolume = 1f;
+        [Range(0f, 1f)] public float musicVolume = 0.5f;
+        [Range(0f, 1f)] public float sfxVolume = 0.8f;
         public float musicCrossfadeSeconds = 1f;
 
         [Header("Final No")]

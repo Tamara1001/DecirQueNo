@@ -206,8 +206,8 @@ namespace DecirQueNo.EditorTools
                 new NoLevelConfig(0, 0.8f, BankArrangement.Mixed),
             };
             config.responseSeconds = 46f;
-            config.musicVolume = 0.3f;
-            config.sfxVolume = 1f;
+            config.musicVolume = 0.5f;
+            config.sfxVolume = 0.8f;
             config.musicCrossfadeSeconds = 2.5f;
             config.goodMaxYes = 3;
             config.goodMinNegativeShare = 0.5f;

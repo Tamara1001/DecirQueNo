@@ -92,7 +92,7 @@ namespace DecirQueNo
         // The full-screen picture of the ending, under the card. False when this ending has none.
         private bool BuildCutscene(Ending ending)
         {
-            string name = ending == Ending.Happy ? "Final_Bueno" : ending == Ending.Neutral ? null : "Final_Malo";
+            string name = ending == Ending.Happy ? "Final_Bueno" : ending == Ending.Neutral ? "Final_Neutral" : "Final_Malo";
             Sprite sprite = name != null ? Resources.Load<Sprite>("Cutscenes/" + name) : null;
             if (sprite == null)
             {
@@ -221,7 +221,7 @@ namespace DecirQueNo
             _text.text =
                 (string.IsNullOrEmpty(closing) ? "" : $"<i>{closing}</i>\n\n") +
                 $"<b>{epilogue}</b>\n\n" +
-                $"<color=#9E409E>Seguidores: {stats.Followers:N0}</color>";
+                $"<color=#9E409E>Seguidores: {stats.Followers:N0}\nSalud mental: {Mathf.RoundToInt(100f * stats.Health / manager.Config.maxHealth)}%</color>";
             Place(_text.rectTransform, 0.08f, 0.92f, 0.22f, 0.77f);
         }
 

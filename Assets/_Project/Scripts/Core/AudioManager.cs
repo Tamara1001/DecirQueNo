@@ -18,6 +18,11 @@ namespace DecirQueNo
         private const string Folder = "Audio/";
         private const float MixFollowSeconds = 3f;
 
+        // The sliders are perceptual: the level is squared and then scaled down, so the whole range is quiet and the
+        // low end of the slider is really low.
+        private const float MusicMaster = 0.4f;
+        private const float SfxMaster = 0.5f;
+
         // The music of a run starts a few seconds after the scene, and the "bad" track only joins in
         // when the sanity is really low.
         private const float MixStartDelaySeconds = 3.5f;
@@ -94,10 +99,14 @@ namespace DecirQueNo
                 _musicLevel = Mathf.Clamp01(value);
                 if (_currentMusic != HealthMix && _activeMusic != null && _activeMusic.isPlaying)
                 {
-                    _activeMusic.volume = _musicLevel;
+                    _activeMusic.volume = MusicGain;
                 }
             }
         }
+
+        private float MusicGain => MusicLevel * MusicLevel * MusicMaster;
+
+        private float SfxGain => SfxLevel * SfxLevel * SfxMaster;
 
         public float SfxLevel
         {
@@ -219,7 +228,7 @@ namespace DecirQueNo
 
         private float MusicVolume()
         {
-            return MusicLevel;
+            return MusicGain;
         }
 
         private void PlayForScene(string scene)
@@ -313,7 +322,7 @@ namespace DecirQueNo
         {
             float fromStart = from.volume;
             float toStart = to != null ? to.volume : 0f;
-            float volume = MusicLevel;
+            float volume = MusicGain;
             float seconds = GameManager.Instance != null && GameManager.Instance.Config != null
                 ? GameManager.Instance.Config.musicCrossfadeSeconds
                 : 1f;
@@ -360,7 +369,7 @@ namespace DecirQueNo
             _nextVoice = (_nextVoice + 1) % _sfxVoices.Count;
             voice.Stop();
             voice.pitch = pitch;
-            voice.volume = SfxLevel;
+            voice.volume = SfxGain;
             voice.clip = clip;
             voice.Play();
         }

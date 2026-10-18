@@ -3,21 +3,22 @@ using UnityEngine.UI;
 
 namespace DecirQueNo
 {
-    // The look of low sanity, without bars or numbers. From about 60% sanity down the picture goes cold and
-    // grey, slow murky clouds drift over it, a fine film grain flickers, the corners close in with a deep
-    // indigo shade, and below 30% the shade breathes like a slow heartbeat that bleeds a little red.
+    // The look of low sanity, without bars or numbers. It builds up slowly from about 60% sanity down to 0%: the
+    // picture goes cold and grey, slow murky clouds drift over it, a fine film grain flickers, a very soft shade
+    // closes in around the phone, and below 30% the shade breathes like a slow heartbeat with dark flashes.
     [RequireComponent(typeof(Image))]
     public class HealthVignetteUI : MonoBehaviour
     {
         private static readonly Color ShadeColor = new Color(0.06f, 0.02f, 0.16f);
-        private static readonly Color BeatColor = new Color(0.2f, 0.01f, 0.09f);
+        private static readonly Color BeatColor = new Color(0f, 0f, 0.01f);
         private static readonly Color FogColor = new Color(0.42f, 0.48f, 0.62f);
         private static readonly Color MurkColorA = new Color(0.1f, 0.14f, 0.24f);
         private static readonly Color MurkColorB = new Color(0.2f, 0.1f, 0.26f);
 
-        private const float StartsBelow = 0.62f;
-        private const float FullBelow = 0.08f;
-        private const float MaxShade = 0.86f;
+        private const float StartsBelow = 0.6f;
+        private const float FullBelow = 0f;
+        private const float Ramp = 1.5f;
+        private const float MaxShade = 0.8f;
         private const float MaxFog = 0.26f;
         private const float MaxMurk = 0.42f;
         private const float MaxGrain = 0.085f;
@@ -40,7 +41,7 @@ namespace DecirQueNo
         {
             _shade = GetComponent<Image>();
             _shade.raycastTarget = false;
-            _shade.sprite = UiNoise.EdgeShade();
+            _shade.sprite = UiNoise.SoftEdgeShade();
             _shade.color = new Color(ShadeColor.r, ShadeColor.g, ShadeColor.b, 0f);
 
             // The layers sit under the shade, in this order: cold flat fog, two drifting clouds, grain.
@@ -70,8 +71,27 @@ namespace DecirQueNo
             return graphic;
         }
 
+        // In the game the shade is centered on the phone, where the player is looking, not on the middle of the canvas.
+        private void CenterOnPhone()
+        {
+            Transform phone = transform.parent != null ? transform.parent.Find("Phone") : null;
+            var canvasRect = transform.parent as RectTransform;
+            var rect = (RectTransform)transform;
+            if (phone == null || canvasRect == null)
+            {
+                return;
+            }
+
+            Vector3 local = canvasRect.InverseTransformPoint(phone.position);
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(canvasRect.rect.width * 1.5f, canvasRect.rect.height * 1.9f);
+            rect.anchoredPosition = new Vector2(local.x, local.y);
+        }
+
         private void Start()
         {
+            CenterOnPhone();
             GameManager manager = GameManager.Instance;
             manager.EnsureGame();
             _stats = manager.Stats;
@@ -104,7 +124,8 @@ namespace DecirQueNo
         {
             float health01 = Mathf.Clamp01(health / (float)GameManager.Instance.Config.maxHealth);
             float t = Mathf.Clamp01((StartsBelow - health01) / (StartsBelow - FullBelow));
-            return t * t * (3f - 2f * t);
+            // Slow at first: a couple of mistakes only tint the picture, it takes many to get to the end.
+            return Mathf.Pow(t, Ramp);
         }
 
         private void Apply()
@@ -115,11 +136,11 @@ namespace DecirQueNo
             Color shadeColor = ShadeColor;
             if (health01 < BreatheBelow)
             {
-                // Two quick beats and a rest, like a heart: the shade closes in and bleeds a little red.
+                // Two quick beats and a rest, like a heart: the shade closes in and flashes to black.
                 float phase = Mathf.Repeat(time * HeartRate, 1f);
                 float beat = Pulse(phase, 0.05f) + 0.7f * Pulse(phase, 0.25f);
                 shade *= 0.93f + 0.07f * Mathf.Sin(time * 1.7f) + 0.06f * beat;
-                shadeColor = Color.Lerp(ShadeColor, BeatColor, Mathf.Clamp01(beat) * 0.6f);
+                shadeColor = Color.Lerp(ShadeColor, BeatColor, Mathf.Clamp01(beat));
             }
 
             _shade.color = new Color(shadeColor.r, shadeColor.g, shadeColor.b, Mathf.Clamp01(shade));

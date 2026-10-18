@@ -107,7 +107,7 @@ namespace DecirQueNo
         public static void AddVolumeRows(RectTransform card, TMP_FontAsset font, float musicY, float sfxY)
         {
             AudioManager audio = AudioManager.Instance;
-            AddRow(card, font, "Música", musicY, audio != null ? audio.MusicLevel : 0.3f, value =>
+            AddRow(card, font, "Música", musicY, audio != null ? audio.MusicLevel : 0.5f, value =>
             {
                 if (AudioManager.Instance != null)
                 {
@@ -115,7 +115,7 @@ namespace DecirQueNo
                 }
             });
 
-            AddRow(card, font, "Efectos", sfxY, audio != null ? audio.SfxLevel : 1f, value =>
+            AddRow(card, font, "Efectos", sfxY, audio != null ? audio.SfxLevel : 0.8f, value =>
             {
                 if (AudioManager.Instance != null)
                 {

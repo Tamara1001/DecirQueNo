@@ -12,8 +12,9 @@ namespace DecirQueNo
         private const float FirstMessageDelay = 3f;
         private const float MessageGap = 5f;
 
-        // How fast the clock catches up with the story (a fraction of the day per second).
-        private const float ClockCatchUp = 0.09f;
+        // The clock always runs at the same pace. After answering a message it only speeds up (this fraction of the
+        // day per second) until it reaches the part of the day that the story has reached.
+        private const float ClockFastForward = 0.03f;
 
         [SerializeField] private ConversationController _conversation;
 
@@ -38,6 +39,9 @@ namespace DecirQueNo
         public NotificationSystem Notifications { get; } = new NotificationSystem();
         public int DayNumber => _day != null ? _day.dayNumber : 0;
         public string ClockText => _clockText;
+
+        // Minutes since midnight on the phone's clock, without the rounding of the text.
+        public float ClockMinutes { get; private set; } = StartHour * 60f;
 
         public event Action<int, string> OnClockChanged;
 
@@ -161,7 +165,8 @@ namespace DecirQueNo
                 return;
             }
 
-            Notifications.Add(_messages[_nextIndex], _manager.Config.notificationLifetime);
+            Notification arrived = Notifications.Add(_messages[_nextIndex], _manager.Config.notificationLifetime);
+            arrived.ArrivedAtMinutes = ClockMinutes;
             _nextIndex++;
             _nextArrivalIn = MessageGap;
         }
@@ -194,14 +199,17 @@ namespace DecirQueNo
 
         private void UpdateClock()
         {
-            // The day moves with the story as well as with the real time: every answered message brings the evening
-            // closer, so the player gets to see the afternoon and the night. The clock catches up smoothly.
-            float timeProgress = Mathf.Clamp01(_elapsed / _day.dayLength);
+            // Constant pace in real time. Every answered message brings the evening closer: the clock then speeds up
+            // for a while to catch up, so the player still gets to see the afternoon and the night.
             float total = Mathf.Max(1f, _messages.Count);
             float messageProgress = Mathf.Clamp01(_resolved / total);
-            _shownProgress = Mathf.MoveTowards(_shownProgress, Mathf.Max(_shownProgress, timeProgress, messageProgress), ClockCatchUp * Time.deltaTime);
+            float step = Time.deltaTime / _day.dayLength;
+            float behind = Mathf.Max(0f, messageProgress - (_shownProgress + step));
+            step += Mathf.Min(ClockFastForward * Time.deltaTime, behind);
+            _shownProgress = Mathf.Clamp01(_shownProgress + step);
             float t = _shownProgress;
-            int totalMinutes = Mathf.RoundToInt(StartHour * 60 + t * (EndHour - StartHour) * 60);
+            ClockMinutes = StartHour * 60 + t * (EndHour - StartHour) * 60;
+            int totalMinutes = Mathf.RoundToInt(ClockMinutes);
 
             // Only tens of minutes are shown: the exact minutes would add pressure for nothing.
             totalMinutes -= totalMinutes % 10;

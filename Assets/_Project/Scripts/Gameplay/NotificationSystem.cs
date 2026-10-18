@@ -9,6 +9,9 @@ namespace DecirQueNo
         public float Lifetime { get; }
         public float Remaining { get; set; }
 
+        // Phone clock (minutes since midnight) when it arrived, for the "Hace x" label.
+        public float ArrivedAtMinutes { get; set; }
+
         // 1 = just arrived, 0 = about to expire.
         public float Remaining01 => Lifetime <= 0f ? 0f : Remaining / Lifetime;
 
@@ -45,12 +48,13 @@ namespace DecirQueNo
             return _expiredList.Contains(notification);
         }
 
-        public void Add(MessageData message, float lifetime)
+        public Notification Add(MessageData message, float lifetime)
         {
             var notification = new Notification(message, lifetime);
             _pending.Add(notification);
             OnNotificationAdded?.Invoke(notification);
             OnChanged?.Invoke();
+            return notification;
         }
 
         // Puts back a notification the player opened and then left, keeping what is left of its life.

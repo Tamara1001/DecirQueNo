@@ -25,6 +25,7 @@ namespace DecirQueNo
         private Notification _notification;
         private bool _expiring;
         private bool _expired;
+        private DayController _dayController;
 
         public bool IsExpired => _expired;
 
@@ -158,9 +159,13 @@ namespace DecirQueNo
                 return;
             }
 
-            DayData day = GameManager.Instance != null ? GameManager.Instance.CurrentDayData : null;
-            float dayLength = day != null ? day.dayLength : 150f;
-            string ago = TimeAgo.Format(_notification.Lifetime - _notification.Remaining, dayLength);
+            // The label follows the phone's clock, so it always matches the time of arrival.
+            if (_dayController == null)
+            {
+                _dayController = FindFirstObjectByType<DayController>();
+            }
+
+            string ago = TimeAgo.FormatMinutes(_dayController != null ? _dayController.ClockMinutes - _notification.ArrivedAtMinutes : 0f);
             string text = $"{_notification.Message.sender}  ({ago})";
             if (text != _label.text)
             {

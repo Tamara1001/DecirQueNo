@@ -8,6 +8,7 @@ namespace DecirQueNo
         private static Texture2D _cloud;
         private static Texture2D _grain;
         private static Sprite _radial;
+        private static Sprite _soft;
 
         // Soft tileable clouds: white with a smooth alpha, to be tinted and scrolled.
         public static Texture2D Cloud(int size = 128, float frequency = 3f, int seed = 11)
@@ -87,6 +88,36 @@ namespace DecirQueNo
             texture.Apply();
             _radial = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
             return _radial;
+        }
+
+        // A very soft, wide vignette: no hard edge, it just darkens gradually away from the center.
+        public static Sprite SoftEdgeShade()
+        {
+            if (_soft != null)
+            {
+                return _soft;
+            }
+
+            const int size = 128;
+            var texture = NewTexture(size, FilterMode.Bilinear);
+            texture.wrapMode = TextureWrapMode.Clamp;
+            var pixels = new Color[size * size];
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = (x + 0.5f) / size * 2f - 1f;
+                    float dy = (y + 0.5f) / size * 2f - 1f;
+                    float distance = Mathf.Sqrt(dx * dx + dy * dy);
+                    float a = Mathf.SmoothStep(0.25f, 1.55f, distance);
+                    pixels[y * size + x] = new Color(1f, 1f, 1f, a);
+                }
+            }
+
+            texture.SetPixels(pixels);
+            texture.Apply();
+            _soft = Sprite.Create(texture, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f));
+            return _soft;
         }
 
         // 1 in the middle, fading to 0 at the edge: a soft glow.
