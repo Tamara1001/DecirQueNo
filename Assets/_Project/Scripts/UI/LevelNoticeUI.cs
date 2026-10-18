@@ -6,14 +6,17 @@ using UnityEngine.UI;
 namespace DecirQueNo
 {
     // Tells the player when saying No got easier or harder, which is the point of the game.
-    // A card with the look of the rest of the UI that slides in, waits and fades out.
+    // A small notification with the look of the rest of the UI that rises from below the screen, waits and floats up
+    // while it fades out.
     [RequireComponent(typeof(CanvasGroup))]
     public class LevelNoticeUI : MonoBehaviour
     {
-        private const float ShowSeconds = 3.5f;
+        private const float ShowSeconds = 2.6f;
         private const float FadeSeconds = 0.5f;
-        private const float SlideSeconds = 0.35f;
-        private const float SlideDistance = 160f;
+        private const float CornerMargin = 48f;
+        private const float RiseSeconds = 0.6f;
+        private const float FloatAwayDistance = 70f;
+        private static readonly Vector2 CardSize = new Vector2(470f, 76f);
 
         private static readonly Color EasierColor = new Color(0.62f, 0.9f, 0.95f);
         private static readonly Color HarderColor = new Color(0.98f, 0.67f, 0.94f);
@@ -32,6 +35,13 @@ namespace DecirQueNo
             _group = GetComponent<CanvasGroup>();
             _group.alpha = 0f;
             _rect = (RectTransform)transform;
+
+            // The old card could be stretched by its anchors: it becomes a small fixed-size card with the same center.
+            Vector3 center = _rect.TransformPoint(_rect.rect.center);
+            _rect.anchorMin = _rect.anchorMax = new Vector2(0.5f, 0.5f);
+            _rect.pivot = new Vector2(0.5f, 0.5f);
+            _rect.sizeDelta = CardSize;
+            _rect.position = center;
             _restPosition = _rect.anchoredPosition;
             BuildCard();
         }
@@ -49,28 +59,30 @@ namespace DecirQueNo
             var borderImage = border.GetComponent<Image>();
             borderImage.color = UiSprites.Navy;
             borderImage.raycastTarget = false;
-            UiSprites.Round(borderImage, 34f);
+            UiSprites.Round(borderImage, 30f);
 
             var fill = new GameObject("Fill", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
             fill.transform.SetParent(border.transform, false);
             var fillRect = (RectTransform)fill.transform;
             fillRect.anchorMin = Vector2.zero;
             fillRect.anchorMax = Vector2.one;
-            fillRect.offsetMin = new Vector2(7f, 7f);
-            fillRect.offsetMax = new Vector2(-7f, -7f);
+            fillRect.offsetMin = new Vector2(6f, 6f);
+            fillRect.offsetMax = new Vector2(-6f, -6f);
             _fill = fill.GetComponent<Image>();
             _fill.raycastTarget = false;
-            UiSprites.Round(_fill, 28f);
+            UiSprites.Round(_fill, 24f);
 
             _text.color = UiSprites.Navy;
             _text.fontStyle = FontStyles.Bold;
             _text.alignment = TextAlignmentOptions.Center;
             _text.enableAutoSizing = true;
-            _text.fontSizeMin = 20f;
-            _text.fontSizeMax = 42f;
+            _text.fontSizeMin = 18f;
+            _text.fontSizeMax = 30f;
             var textRect = _text.rectTransform;
-            textRect.offsetMin = new Vector2(24f, 12f);
-            textRect.offsetMax = new Vector2(-24f, -12f);
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(18f, 8f);
+            textRect.offsetMax = new Vector2(-18f, -8f);
         }
 
         private void Start()
@@ -105,20 +117,23 @@ namespace DecirQueNo
 
         private IEnumerator Show()
         {
-            // Slides in from the right with a little overshoot.
+            // Its place is the bottom right corner of the screen. It starts just below the bottom edge and rises to it
+            // with a little overshoot.
+            PlaceInCorner();
+            AudioManager.Play(Sfx.Notification, 1.25f);
+            float rise = DistanceFromBelowScreen();
+            _group.alpha = 1f;
             float time = 0f;
-            while (time < SlideSeconds)
+            while (time < RiseSeconds)
             {
                 time += Time.unscaledDeltaTime;
-                float k = Mathf.Clamp01(time / SlideSeconds);
-                float back = 1f + 2.70158f * Mathf.Pow(k - 1f, 3f) + 1.70158f * Mathf.Pow(k - 1f, 2f);
-                _rect.anchoredPosition = _restPosition + new Vector2(SlideDistance * (1f - back), 0f);
-                _group.alpha = Mathf.Clamp01(k * 3f);
+                float k = Mathf.Clamp01(time / RiseSeconds);
+                float back = 1f + 1.2f * Mathf.Pow(k - 1f, 3f) + 0.2f * Mathf.Pow(k - 1f, 2f);
+                _rect.anchoredPosition = _restPosition - new Vector2(0f, rise * (1f - back));
                 yield return null;
             }
 
             _rect.anchoredPosition = _restPosition;
-            _group.alpha = 1f;
 
             float wait = 0f;
             while (wait < ShowSeconds)
@@ -127,16 +142,47 @@ namespace DecirQueNo
                 yield return null;
             }
 
+            // It keeps going up while it fades away.
             time = 0f;
             while (time < FadeSeconds)
             {
                 time += Time.unscaledDeltaTime;
-                _group.alpha = 1f - Mathf.Clamp01(time / FadeSeconds);
+                float k = Mathf.Clamp01(time / FadeSeconds);
+                _group.alpha = 1f - k;
+                _rect.anchoredPosition = _restPosition + new Vector2(0f, FloatAwayDistance * k);
                 yield return null;
             }
 
             _group.alpha = 0f;
+            _rect.anchoredPosition = _restPosition;
             _routine = null;
+        }
+
+        private void PlaceInCorner()
+        {
+            var canvasRect = _rect.root as RectTransform;
+            if (canvasRect == null)
+            {
+                return;
+            }
+
+            Rect area = canvasRect.rect;
+            var local = new Vector3(area.xMax - CardSize.x * 0.5f - CornerMargin, area.yMin + CardSize.y * 0.5f + CornerMargin, 0f);
+            _rect.position = canvasRect.TransformPoint(local);
+            _restPosition = _rect.anchoredPosition;
+        }
+
+        // How far below its resting place the bottom edge of the screen plus the height of the card is.
+        private float DistanceFromBelowScreen()
+        {
+            var canvasRect = _rect.root as RectTransform;
+            if (canvasRect == null)
+            {
+                return 400f;
+            }
+
+            Vector3 local = canvasRect.InverseTransformPoint(_rect.position);
+            return local.y + canvasRect.rect.height * 0.5f + CardSize.y;
         }
     }
 }
