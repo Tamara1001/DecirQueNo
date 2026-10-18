@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DecirQueNo
 {
@@ -19,12 +20,20 @@ namespace DecirQueNo
 
         private void Start()
         {
+            UiSprites.Round(_container.GetComponent<Image>(), 22f);
             _day.Notifications.OnChanged += Refresh;
+            _day.Notifications.OnNotificationAdded += HandleAdded;
             _day.Notifications.OnExpired += HandleExpired;
             _conversation.OnOpened += HandleOpened;
             _conversation.OnClosed += HandleClosed;
+            _conversation.OnAbandoned += HandleClosed;
             _subscribed = true;
             Refresh();
+        }
+
+        private void HandleAdded(Notification notification)
+        {
+            AudioManager.Play(Sfx.Notification);
         }
 
         private void OnDestroy()
@@ -35,11 +44,13 @@ namespace DecirQueNo
             }
 
             _day.Notifications.OnChanged -= Refresh;
+            _day.Notifications.OnNotificationAdded -= HandleAdded;
             _day.Notifications.OnExpired -= HandleExpired;
             if (_conversation != null)
             {
                 _conversation.OnOpened -= HandleOpened;
                 _conversation.OnClosed -= HandleClosed;
+                _conversation.OnAbandoned -= HandleClosed;
             }
         }
 

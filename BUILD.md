@@ -33,4 +33,4 @@ La primera vez cambia la plataforma activa a WebGL y reimporta el proyecto (tard
 - `Builds/` está en `.gitignore`; no se commitea.
 
 ## Qué incluye hoy
-La build refleja el estado actual del juego. Mientras se implementa el diseño nuevo (ver `MVP.md`), la salud sigue apareciendo como texto DEBUG en el monitor.
+La build refleja el estado actual del juego, sin textos de debug. El nombre del producto (título de la pestaña en el navegador) es "Still Typing...". El zip conserva el nombre `DecirQueNo-WebGL.zip`.

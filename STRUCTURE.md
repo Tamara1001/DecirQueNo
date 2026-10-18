@@ -17,6 +17,8 @@ Assets/
                    MonitorUI, SleepUI, EndingUI, MainMenuUI
     Data/          Configs y ScriptableObjects (GameConfig, Day_1..3, mensajes)
     Prefabs/
+    Art/Scenes/    Capas de Game (monitor, aro con celular, micrófono) y cuarto/espejo de Sleep
+    Resources/     GameConfig, Audio/ (BGM y SFX .ogg), Characters/ (Sam día/noche), UI/ (burbujas de chat)
 ```
 Tests: `Assets/_Project/Tests/PlayMode/` (assembly `DecirQueNo.Tests.PlayMode`, con los bots en `Bots/`). El código del juego es el assembly `DecirQueNo` (`Assets/_Project/Scripts/DecirQueNo.asmdef`). Ver `BOTS.md`.
 
@@ -49,6 +51,8 @@ Flujo: `MainMenu → Instructions → Game (día N) → Sleep → Game (día N+1
 - **PhraseBuilder:** mantiene las palabras elegidas; agregar/sacar por click.
 - **PhraseValidator:** compara la frase con `phrases` del mensaje; devuelve tipo o inválida. Bloquea "No" si la salud ≥ umbral.
 - **ResponseTimer:** cuenta atrás, evento `OnTimeout` ⇒ respuesta "Sí" por default.
+- **AudioManager:** música por escena (menú, buena/poca salud mezcladas según la salud, ganar/perder) y SFX (`AudioManager.Play(Sfx.X)`). Clips en `Resources/Audio`; volúmenes en `GameConfig`.
+- **ChatBubbleView:** historial de la conversación con burbujas por remitente; reduce la letra hasta que entra en el panel.
 - **PlayerStats:** seguidores y salud; eventos `OnFollowersChanged`, `OnHealthChanged`.
 
 ## Comunicación

@@ -116,3 +116,6 @@ InitTestScene*.unity*
 # Bots y tests
 /BotReports/
 /Assets/Resources/PerformanceTestRun*
+
+# Originales descargados de Drive (fuentes pesadas, no van al repo)
+/DriveAssets/

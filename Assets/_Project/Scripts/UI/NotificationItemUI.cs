@@ -8,8 +8,12 @@ namespace DecirQueNo
 {
     public class NotificationItemUI : MonoBehaviour
     {
-        private static readonly Color FullLifeColor = new Color(0.35f, 0.8f, 0.4f);
-        private static readonly Color LowLifeColor = new Color(0.9f, 0.3f, 0.3f);
+        private static readonly Color FullLifeColor = new Color(0.91f, 0.96f, 0.97f);
+        private const float BannerCornerScale = 2.3f;
+        private const float LifeBarMargin = 0.08f;
+        private const float LifeBarBottom = 9f;
+        private const float LifeBarHeight = 6f;
+        private static readonly Color LowLifeColor = new Color(1f, 0.35f, 0.5f);
 
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _label;
@@ -35,8 +39,15 @@ namespace DecirQueNo
             _notification = notification;
             MessageData message = notification.Message;
 
-            UiFx.MakeHorizontalFill(_lifeFill);
+            ApplyBanner(message.sender);
+            StyleLifeBar();
             RefreshLabel();
+
+            var feedback = GetComponent<ButtonFeedback>();
+            if (feedback != null)
+            {
+                feedback.ClickSound = false;
+            }
 
             _button.onClick.RemoveAllListeners();
             _button.onClick.AddListener(() => onClick?.Invoke(notification));
@@ -46,6 +57,42 @@ namespace DecirQueNo
             {
                 StartCoroutine(UiFx.Pop(transform));
             }
+        }
+
+        // The banner of the sender (teal, orchid or navy) replaces the flat background.
+        private void ApplyBanner(string sender)
+        {
+            var background = GetComponent<Image>();
+            Sprite banner = SenderStyle.Banner(sender);
+            if (background != null && banner != null)
+            {
+                background.sprite = banner;
+                background.type = Image.Type.Sliced;
+                // The banner corners are big: drawn smaller they are rounded but not a pill.
+                background.pixelsPerUnitMultiplier = BannerCornerScale;
+                background.color = Color.white;
+            }
+
+            _label.alignment = TextAlignmentOptions.Center;
+
+            _label.color = SenderStyle.BannerText(sender);
+        }
+
+        // A thin rounded bar inside the banner that empties as the notification runs out.
+        private void StyleLifeBar()
+        {
+            if (_lifeFill == null)
+            {
+                return;
+            }
+
+            UiSprites.Round(_lifeFill, 3f);
+            _lifeFill.raycastTarget = false;
+            var rect = _lifeFill.rectTransform;
+            rect.pivot = new Vector2(0f, 0f);
+            rect.anchorMin = new Vector2(LifeBarMargin, 0f);
+            rect.anchoredPosition = new Vector2(0f, LifeBarBottom);
+            rect.sizeDelta = new Vector2(0f, LifeBarHeight);
         }
 
         // Fades and shrinks the item before it disappears. Used when the notification expired.
@@ -100,7 +147,7 @@ namespace DecirQueNo
             }
 
             float life = Mathf.Clamp01(_notification.Remaining01);
-            _lifeFill.fillAmount = life;
+            _lifeFill.rectTransform.anchorMax = new Vector2(LifeBarMargin + (1f - 2f * LifeBarMargin) * life, 0f);
             _lifeFill.color = Color.Lerp(LowLifeColor, FullLifeColor, life);
         }
     }

@@ -7,6 +7,11 @@ namespace DecirQueNo
 {
     public class WordButtonUI : MonoBehaviour
     {
+        // A block is as wide as its text: font, height and padding scale with the difficulty tier.
+        private const float BaseFontSize = 26f;
+        private const float BaseHeight = 46f;
+        private const float PaddingX = 20f;
+
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _label;
         [SerializeField] private Image _background;
@@ -32,12 +37,49 @@ namespace DecirQueNo
             }
         }
 
-        public void Setup(string word, Action onClick, bool showEmojis = false)
+        public void Setup(string word, Action onClick, bool showEmojis = false, float scale = 1f)
         {
             Word = word;
+            UiSprites.Round(_background, 18f * scale);
+            _label.enableAutoSizing = false;
+            _label.enableWordWrapping = false;
+            _label.overflowMode = TextOverflowModes.Overflow;
+            _label.fontSize = BaseFontSize * scale;
+            _label.alignment = TextAlignmentOptions.Center;
             _label.text = TextDisplay.ForScreen(word, showEmojis);
+
+            // Inset the text so it never touches the edge of the block.
+            var labelRect = _label.rectTransform;
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(PaddingX * 0.5f * scale, 2f);
+            labelRect.offsetMax = new Vector2(-PaddingX * 0.5f * scale, -2f);
+
+            var element = GetComponent<LayoutElement>();
+            if (element == null)
+            {
+                element = gameObject.AddComponent<LayoutElement>();
+            }
+
+            element.preferredWidth = Mathf.Ceil(_label.GetPreferredValues(_label.text).x) + PaddingX * scale;
+            element.preferredHeight = BaseHeight * scale;
+
+            DisableClickSound();
             _button.onClick.RemoveAllListeners();
-            _button.onClick.AddListener(() => onClick?.Invoke());
+            _button.onClick.AddListener(() =>
+            {
+                AudioManager.Play(Sfx.Type, AudioManager.PlayerTypePitch);
+                onClick?.Invoke();
+            });
+        }
+
+        private void DisableClickSound()
+        {
+            var feedback = GetComponent<ButtonFeedback>();
+            if (feedback != null)
+            {
+                feedback.ClickSound = false;
+            }
         }
 
         public void SetState(bool interactable, Color color)
