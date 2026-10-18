@@ -145,8 +145,8 @@ namespace DecirQueNo
             border.transform.SetParent(transform, false);
             var card = (RectTransform)border.transform;
             card.anchorMin = card.anchorMax = new Vector2(0.5f, 0.5f);
-            card.anchoredPosition = new Vector2(520f, 0f);
-            card.sizeDelta = new Vector2(860f, 900f);
+            card.anchoredPosition = new Vector2(450f, 0f);
+            card.sizeDelta = new Vector2(800f, 900f);
             var borderImage = border.GetComponent<Image>();
             borderImage.color = UiSprites.Navy;
             borderImage.raycastTarget = false;
@@ -239,7 +239,12 @@ namespace DecirQueNo
             _menuButton.transform.SetParent(card, false);
             Place((RectTransform)_menuButton.transform, 0.52f, 0.95f, 0.04f, 0.17f);
             UiSprites.CardButton(_menuButton, new Color(0.98f, 0.8f, 0.96f));
-            _menuButton.GetComponentInChildren<TMP_Text>().text = "Volver al menú";
+            TMP_Text menuLabel = _menuButton.GetComponentInChildren<TMP_Text>();
+            menuLabel.text = "Volver al menú";
+            menuLabel.enableAutoSizing = true;
+            menuLabel.fontSizeMin = 22f;
+            menuLabel.fontSizeMax = menuLabel.fontSize;
+            menuLabel.margin = new Vector4(16f, 0f, 16f, 0f);
         }
 
         // The card fades in and settles from a slightly smaller size.

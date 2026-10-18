@@ -18,6 +18,7 @@ namespace DecirQueNo
         private const float DotSeconds = 0.45f;
         private const float BobHeight = 3f;
         private const float BobSpeed = 1.2f;
+        private const float TitleCenterX = 0.8f;
         private const int OutlineDirections = 12;
         private const float OutlineWidth = 5f;
 
@@ -40,8 +41,10 @@ namespace DecirQueNo
             SettingsPanel settings = SettingsPanel.Create(transform, _playButton, playLabel.font);
 
             var playRect = (RectTransform)_playButton.transform;
-            float x0 = playRect.anchorMin.x;
-            float x1 = playRect.anchorMax.x;
+            // The buttons are centered under the title, not where the old layout left them.
+            float width = playRect.anchorMax.x - playRect.anchorMin.x;
+            float x0 = TitleCenterX - width * 0.5f;
+            float x1 = TitleCenterX + width * 0.5f;
             const float rowHeight = 0.095f;
             const float rowStep = 0.115f;
             float top = 0.37f;

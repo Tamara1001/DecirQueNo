@@ -37,10 +37,7 @@ namespace DecirQueNo
             manager.EnsureGame();
             _continueLabel = _continueButton.GetComponentInChildren<TMP_Text>();
             _continueButton.onClick.AddListener(HandleContinue);
-            if (manager.CurrentDay > 1)
-            {
-                BuildSanityFilter();
-            }
+            BuildSanityFilter();
 
             BuildCard();
             ShowNight();
@@ -56,7 +53,11 @@ namespace DecirQueNo
             rect.anchorMax = Vector2.one;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
-            go.AddComponent<HealthVignetteUI>();
+            var vignette = go.AddComponent<HealthVignetteUI>();
+            vignette.Strength = 2.2f;
+
+            // Focus on the mirror, with a wider and softer shade than in the game.
+            vignette.FocusOn(_mirror.rectTransform, 2.1f, 2.6f);
         }
 
         // Same look as the opening slides: a card with a navy border next to the mirror.
@@ -66,8 +67,8 @@ namespace DecirQueNo
             border.transform.SetParent(transform, false);
             var card = (RectTransform)border.transform;
             card.anchorMin = card.anchorMax = new Vector2(0.5f, 0.5f);
-            card.anchoredPosition = new Vector2(560f, 0f);
-            card.sizeDelta = new Vector2(760f, 560f);
+            card.anchoredPosition = new Vector2(470f, 0f);
+            card.sizeDelta = new Vector2(700f, 520f);
             var borderImage = border.GetComponent<Image>();
             borderImage.color = UiSprites.Navy;
             borderImage.raycastTarget = false;

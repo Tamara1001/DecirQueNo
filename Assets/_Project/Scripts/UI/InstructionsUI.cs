@@ -155,8 +155,8 @@ namespace DecirQueNo
             Image border = NewImage("Card", transform, Navy);
             var card = (RectTransform)border.transform;
             card.anchorMin = card.anchorMax = new Vector2(0.5f, 0.5f);
-            card.anchoredPosition = new Vector2(560f, 0f);
-            card.sizeDelta = new Vector2(780f, 820f);
+            card.anchoredPosition = new Vector2(470f, 0f);
+            card.sizeDelta = new Vector2(720f, 780f);
             UiSprites.Round(border, 46f);
 
             Image fill = NewImage("Fill", card, Lilac);

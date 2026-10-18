@@ -27,6 +27,13 @@ namespace DecirQueNo
         private const float FadeSpeed = 1.2f;
         private const float GrainStepSeconds = 0.07f;
 
+        // 1 in the game. The Sleep scene turns it up so the sanity is also felt at night and in the morning.
+        public float Strength { get; set; } = 1f;
+
+        // Where the shade is centered. In the game it is the phone; the Sleep scene points it at the mirror.
+        private RectTransform _focus;
+        private Vector2 _focusSize = new Vector2(1.5f, 1.9f);
+
         private Image _shade;
         private Image _fog;
         private RawImage _murkA;
@@ -71,10 +78,18 @@ namespace DecirQueNo
             return graphic;
         }
 
-        // In the game the shade is centered on the phone, where the player is looking, not on the middle of the canvas.
+        // Centers the shade on something else than the phone. A bigger size scale makes the shade softer.
+        public void FocusOn(RectTransform target, float widthScale, float heightScale)
+        {
+            _focus = target;
+            _focusSize = new Vector2(widthScale, heightScale);
+        }
+
+        // The shade is centered where the player is looking (the phone in the game, the mirror in Sleep), not on the
+        // middle of the canvas.
         private void CenterOnPhone()
         {
-            Transform phone = transform.parent != null ? transform.parent.Find("Phone") : null;
+            Transform phone = _focus != null ? _focus : transform.parent != null ? transform.parent.Find("Phone") : null;
             var canvasRect = transform.parent as RectTransform;
             var rect = (RectTransform)transform;
             if (phone == null || canvasRect == null)
@@ -85,7 +100,7 @@ namespace DecirQueNo
             Vector3 local = canvasRect.InverseTransformPoint(phone.position);
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(canvasRect.rect.width * 1.5f, canvasRect.rect.height * 1.9f);
+            rect.sizeDelta = new Vector2(canvasRect.rect.width * _focusSize.x, canvasRect.rect.height * _focusSize.y);
             rect.anchoredPosition = new Vector2(local.x, local.y);
         }
 
@@ -120,12 +135,12 @@ namespace DecirQueNo
         }
 
         // 0 while the sanity is fine, 1 when it is almost gone.
-        private static float DangerFor(int health)
+        private float DangerFor(int health)
         {
             float health01 = Mathf.Clamp01(health / (float)GameManager.Instance.Config.maxHealth);
             float t = Mathf.Clamp01((StartsBelow - health01) / (StartsBelow - FullBelow));
             // Slow at first: a couple of mistakes only tint the picture, it takes many to get to the end.
-            return Mathf.Pow(t, Ramp);
+            return Mathf.Clamp01(Mathf.Pow(t, Ramp) * Strength);
         }
 
         private void Apply()
