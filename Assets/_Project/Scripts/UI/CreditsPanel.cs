@@ -29,7 +29,9 @@ namespace DecirQueNo
             "Jessica Briseño  <size=75%>@JessBriss</size>\n\n" +
             "<b><color=#9E409E>Audio para Videojuegos</color></b>\n" +
             "Oriana Oseguera  <size=75%>@ori.sounds</size>\n\n" +
-            "<size=65%>Iconos: Material Icons (Google), licencia Apache 2.0</size>";
+            "<size=65%>Iconos: Material Icons (Google), licencia Apache 2.0\n" +
+            "Cursores: Cursor Pack de Kenney (kenney.nl), CC0</size>\n\n" +
+            "<b><color=#9E409E>Juego creado para la Women Game Jam 2026</color></b>";
 
         // Creates the panel (hidden) under parent. backTemplate is cloned for the close button.
         public static CreditsPanel Create(Transform parent, Button backTemplate, TMP_FontAsset font)

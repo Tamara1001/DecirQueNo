@@ -101,8 +101,8 @@ namespace DecirQueNo
 
             _continueButton.transform.SetParent(card, false);
             var buttonRect = (RectTransform)_continueButton.transform;
-            buttonRect.anchorMin = new Vector2(0.25f, 0.07f);
-            buttonRect.anchorMax = new Vector2(0.75f, 0.25f);
+            buttonRect.anchorMin = new Vector2(0.14f, 0.07f);
+            buttonRect.anchorMax = new Vector2(0.86f, 0.25f);
             buttonRect.offsetMin = Vector2.zero;
             buttonRect.offsetMax = Vector2.zero;
             UiSprites.CardButton(_continueButton, Pink);

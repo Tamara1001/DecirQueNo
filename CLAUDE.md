@@ -11,6 +11,7 @@ Aventura narrativa 2D en Unity 6 (URP 2D). Prototipo del core loop con el guion 
 - `ROADMAP.md` — hitos y estado.
 - `MVP.md` — definición del MVP para itch.io y plan por fases.
 - `BUILD.md` — cómo armar la build WebGL zippeada (menú **DecirQueNo > Build > WebGL for itch.io (zip)**, o `Tools/build-webgl.ps1`).
+- `TRAILER.md` — cómo se graba el gameplay y se arma el trailer (herramienta de editor + ffmpeg).
 - `BOTS.md` — bots de test (Influencer, MentalHealth, Balanced), resultados y hallazgos de balance.
 
 Después de tocar reglas, balance, guion o UI: correr los tests de PlayMode (menú **DecirQueNo > Tests > Run PlayMode bots**, resultado en `BotReports/summary.txt`) y actualizar `BOTS.md`.

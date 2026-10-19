@@ -24,6 +24,9 @@ Tests: `Assets/_Project/Tests/PlayMode/` (assembly `DecirQueNo.Tests.PlayMode`, 
 
 Todo el contenido propio va dentro de `Assets/_Project/`. No tocar `Assets/Settings` ni `TutorialInfo`.
 
+## Cursor
+`GameCursor` (UI) se instancia con `RuntimeInitializeOnLoadMethod`, vive entre escenas y usa el pack de Kenney (ver `ASSETS.md`). Requiere la referencia `Unity.InputSystem` en `DecirQueNo.asmdef`.
+
 ## Escenas
 | Escena | Contenido |
 |---|---|

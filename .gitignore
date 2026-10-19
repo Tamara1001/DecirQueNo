@@ -119,3 +119,6 @@ InitTestScene*.unity*
 
 # Originales descargados de Drive (fuentes pesadas, no van al repo)
 /DriveAssets/
+
+# Trailer render (local)
+/Trailer/

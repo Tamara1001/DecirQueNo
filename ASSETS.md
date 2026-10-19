@@ -31,3 +31,8 @@ Fuente: carpeta de Drive "Carpeta WGJ 2026". Los originales se descargan a `Driv
 - `Assets/_Project/Resources/UI/Icons/`: Material Icons de Google (licencia Apache 2.0, https://github.com/google/material-design-icons), PNG de 96 px convertidos a blanco para poder teñirlos desde código. Se acreditan en la ventana de Créditos.
 - `Resources/UI/Chat_HeaderBar.png`: barra superior de la app de mensajes, de las artistas (Drive, carpeta de UI del celular).
 - Quedan en el Drive sin usar: `cuadro-texto-respuesta.png`, `boton-enviar.png` y `boton-enviar-interfaz-celular.png` (el botón de enviar usa el ícono del pack).
+
+## Cursor
+- `Assets/_Project/Resources/UI/Cursor/`: Cursor Pack de Kenney (https://kenney.nl/assets/cursor-pack, licencia CC0), variante *Outline/Double* de 64 px: `cursor_arrow.png` (flecha) y `cursor_hand.png` (manito sobre botones). Importados como *Cursor*. La licencia está en `Kenney_License.txt` y se acredita en la ventana de Créditos.
+- `GameCursor` (`Scripts/UI/GameCursor.cs`) se crea solo al arrancar el juego y cambia entre flecha y manito según haya un botón interactivo bajo el puntero. Los puntos activos (hotspots) están en el código.
+
