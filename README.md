@@ -4,6 +4,14 @@ Aventura narrativa 2D de terror psicológico hecha en Unity 6 para la **Women Ga
 
 Sos **Sam**, una influencer que acaba de viralizarse. Una influencer famosa, su manager y un patrocinador te llevan, de a poco, a ceder cada vez más. Cada mensaje trae más de una respuesta posible y se arma con fragmentos de frase, bajo presión de tiempo. La moraleja: **aprender a decir que no**.
 
+## De un vistazo
+- **Mi rol:** programación completa del juego, de las herramientas de editor y de los tests, dentro de un equipo de 8 personas durante la jam.
+- **Alcance:** unas 9.300 líneas de C# (58 scripts), 5 escenas y una build WebGL de unos 18 MB.
+- **Basado en datos:** el guion de las y los guionistas (hecho en Miro) se transcribe a [`docs/GUION.md`](docs/GUION.md) y un generador de editor crea los assets del juego a partir de él. Los números de balance viven en un `GameConfig`, sin valores fijos en el código.
+- **Testeado con bots:** tres bots (Influencer, MentalHealth y Balanced) juegan partidas completas a través de la interfaz con tests de PlayMode, y los resultados guían el balance (ver [`docs/BOTS.md`](docs/BOTS.md)).
+- **Herramientas propias:** build WebGL zippeada para itch.io con un clic y una herramienta de grabación de gameplay para armar el trailer.
+- **Documentación de producción:** diseño, balance, estructura, estilo de código y roadmap, todo en [`docs/`](docs/).
+
 ## Cómo se juega
 - **3 días, 3 mensajes por día**, con un antagonista nuevo en cada nivel (Valerie, Christian y un contacto VIP).
 - Cada respuesta se arma tocando fragmentos de 1 a 3 palabras en orden. Elegir qué frase armar es la decisión:
@@ -11,25 +19,25 @@ Sos **Sam**, una influencer que acaba de viralizarse. Una influencer famosa, su 
 - La **cordura** es oculta: no se muestra con números, se nota en el tamaño de los botones, el tiempo para responder y la viñeta de la pantalla.
 - Hay dos finales: **decir que no** o **no dije que no**.
 
-Las reglas completas están en [`DESIGN.md`](DESIGN.md) y los números tuneables en [`BALANCE.md`](BALANCE.md).
+Las reglas completas están en [`DESIGN.md`](docs/DESIGN.md) y los números tuneables en [`BALANCE.md`](docs/BALANCE.md).
 
 ## Tecnología
 - Unity 6 (6000.3), URP 2D.
 - uGUI + TextMeshPro + Input System nuevo, solo puntero (mouse y touch).
 - Build WebGL para itch.io: sin hilos, sin guardado a disco.
-- Tests de PlayMode con tres bots (Influencer, MentalHealth y Balanced) para validar el balance. Ver [`BOTS.md`](BOTS.md).
+- Tests de PlayMode con tres bots (Influencer, MentalHealth y Balanced) para validar el balance. Ver [`BOTS.md`](docs/BOTS.md).
 
 ## Documentación
 | Archivo | Contenido |
 |---|---|
-| [`DESIGN.md`](DESIGN.md) | Mecánicas y finales |
-| [`GUION.md`](GUION.md) | Guion transcripto del tablero de Miro del equipo |
-| [`BALANCE.md`](BALANCE.md) | Valores de balance |
-| [`STRUCTURE.md`](STRUCTURE.md) | Carpetas, escenas y sistemas |
-| [`CODESTYLE.md`](CODESTYLE.md) | Convenciones de código |
-| [`MVP.md`](MVP.md), [`ROADMAP.md`](ROADMAP.md) | Alcance y estado |
-| [`BUILD.md`](BUILD.md) | Cómo armar la build WebGL |
-| [`TRAILER.md`](TRAILER.md) | Cómo se graba el gameplay para el trailer |
+| [`DESIGN.md`](docs/DESIGN.md) | Mecánicas y finales |
+| [`GUION.md`](docs/GUION.md) | Guion transcripto del tablero de Miro del equipo |
+| [`BALANCE.md`](docs/BALANCE.md) | Valores de balance |
+| [`STRUCTURE.md`](docs/STRUCTURE.md) | Carpetas, escenas y sistemas |
+| [`CODESTYLE.md`](docs/CODESTYLE.md) | Convenciones de código |
+| [`MVP.md`](docs/MVP.md), [`ROADMAP.md`](docs/ROADMAP.md) | Alcance y estado |
+| [`BUILD.md`](docs/BUILD.md) | Cómo armar la build WebGL |
+| [`TRAILER.md`](docs/TRAILER.md) | Cómo se graba el gameplay para el trailer |
 
 ## Probarlo en el editor
 1. Abrir el proyecto con Unity 6000.3 (ver `ProjectSettings/ProjectVersion.txt`).
@@ -38,6 +46,8 @@ Las reglas completas están en [`DESIGN.md`](DESIGN.md) y los números tuneables
 4. Para la build web: menú **DecirQueNo > Build > WebGL for itch.io (zip)**.
 
 ## Equipo
+Los créditos completos están en [`CREDITS.md`](CREDITS.md).
+
 | Rol | Persona |
 |---|---|
 | Programación | Tamara D'Angelo ([@Tamara1001](https://github.com/Tamara1001)) |

@@ -1,5 +1,7 @@
 # MVP — versión para itch.io
 
+> **Documento histórico.** Es el plan de la primera etapa del prototipo (17/10/2026). Algunas reglas cambiaron después (por ejemplo la meta de seguidores y el modelo de salud). Las reglas vigentes están en [`DESIGN.md`](DESIGN.md) y [`BALANCE.md`](BALANCE.md).
+
 Objetivo: una partida de ~7 minutos (3 días), jugable en el navegador, que permita responder **¿es divertido armar frases bajo presión y descubrir que decir que no cuesta pero se puede aprender?** No busca arte ni narrativa final.
 
 ## Estado de partida (2026-10-17)
