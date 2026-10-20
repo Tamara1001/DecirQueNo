@@ -1,5 +1,7 @@
 # Still Typing... (antes "Decir Que No")
 
+**▶ [Jugar en el navegador (itch.io)](https://tamara1001.itch.io/stilltyping)**
+
 Aventura narrativa 2D de terror psicológico hecha en Unity 6 para la **Women Game Jam 2026**.
 
 Sos **Sam**, una influencer que acaba de viralizarse. Una influencer famosa, su manager y un patrocinador te llevan, de a poco, a ceder cada vez más. Cada mensaje trae más de una respuesta posible y se arma con fragmentos de frase, bajo presión de tiempo. La moraleja: **aprender a decir que no**.
